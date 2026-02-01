@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const VerificationProcessing = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { email, licenseNumber, inputMethod } = location.state || {};
 
@@ -13,15 +13,17 @@ const VerificationProcessing = () => {
       // Simulate random approval/denial for demo
       const isApproved = Math.random() > 0.3; // 70% approval rate for demo
       
-      history.push('/verification-result', {
-        approved: isApproved,
-        email,
-        licenseNumber
+      navigate('/verification-result', {
+        state: {
+          approved: isApproved,
+          email,
+          licenseNumber
+        }
       });
     }, 3000); // 3 second delay to simulate processing
 
     return () => clearTimeout(timer);
-  }, [history, email, licenseNumber]);
+  }, [navigate, email, licenseNumber]);
 
   return (
     <div style={{ 

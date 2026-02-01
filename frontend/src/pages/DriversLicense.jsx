@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 const DriversLicense = () => {
@@ -8,7 +8,7 @@ const DriversLicense = () => {
   const [licenseNumber, setLicenseNumber] = useState('');
   const [inputMethod, setInputMethod] = useState('manual'); // 'manual' or 'scan'
   const { user, logout } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Email validation regex
   const validateEmail = (email) => {
@@ -47,16 +47,18 @@ const DriversLicense = () => {
     }
 
     // Navigate to verification processing screen
-    history.push('/verification-processing', {
-      email,
-      licenseNumber,
-      inputMethod
+    navigate('/verification-processing', {
+      state: {
+        email,
+        licenseNumber,
+        inputMethod
+      }
     });
   };
 
   const handleLogout = () => {
     logout();
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleScanLicense = () => {

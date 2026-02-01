@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -12,14 +12,14 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Switch>
-          <Route path="/login" component={Login} />
-          <ProtectedRoute path="/home" component={Home} />
-          <ProtectedRoute path="/drivers-license" component={DriversLicense} />
-          <ProtectedRoute path="/verification-processing" component={VerificationProcessing} />
-          <ProtectedRoute path="/verification-result" component={VerificationResult} />
-          <Redirect from="/" to="/login" />
-        </Switch>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/drivers-license" element={<ProtectedRoute><DriversLicense /></ProtectedRoute>} />
+          <Route path="/verification-processing" element={<ProtectedRoute><VerificationProcessing /></ProtectedRoute>} />
+          <Route path="/verification-result" element={<ProtectedRoute><VerificationResult /></ProtectedRoute>} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+        </Routes>
       </Router>
     </AuthProvider>
   );

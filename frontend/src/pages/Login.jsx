@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 const Login = () => {
@@ -7,14 +7,14 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     
     if (login(username, password)) {
-      history.push('/home');
+      navigate('/home');
     } else {
       setError('Invalid credentials');
     }

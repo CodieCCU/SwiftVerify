@@ -1,24 +1,24 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 const VerificationResult = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
   const { approved, email, licenseNumber } = location.state || {};
 
   const handleReturnHome = () => {
-    history.push('/home');
+    navigate('/home');
   };
 
   const handleLogout = () => {
     logout();
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleTryAgain = () => {
-    history.push('/drivers-license');
+    navigate('/drivers-license');
   };
 
   return (

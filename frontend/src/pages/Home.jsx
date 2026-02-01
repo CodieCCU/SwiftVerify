@@ -1,18 +1,18 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 const Home = () => {
   const { user, logout } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleStartVerification = () => {
-    history.push('/drivers-license');
+    navigate('/drivers-license');
   };
 
   return (
