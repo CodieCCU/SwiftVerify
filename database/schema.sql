@@ -39,8 +39,8 @@ CREATE TABLE tenant_verifications (
     user_id INT REFERENCES users(id),
     email VARCHAR(100) NOT NULL,
     license_number VARCHAR(50),
-    verification_status VARCHAR(50) NOT NULL, -- 'pending', 'approved', 'denied', 'data_freeze', 'error'
-    error_type VARCHAR(100), -- 'data_freeze', 'server_timeout', 'network_error', etc.
+    verification_status VARCHAR(50) NOT NULL CHECK (verification_status IN ('pending', 'approved', 'denied', 'data_freeze', 'error')),
+    error_type VARCHAR(100),
     error_message TEXT,
     retry_count INT DEFAULT 0,
     equifax_response JSONB, -- Store the full Equifax API response

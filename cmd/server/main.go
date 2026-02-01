@@ -50,8 +50,10 @@ func main() {
 }
 
 // corsMiddleware adds CORS headers to allow frontend access
+// TODO: In production, restrict to specific origins via environment variable
 func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: Replace "*" with specific allowed origins in production
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

@@ -224,7 +224,7 @@ const DriversLicense = () => {
           }}>
             <span>🔄</span>
             <span>
-              This is attempt #{getAttemptCount() + 1}. Don't worry, you can retry as many times as needed.
+              This is attempt #{getAttemptCount() + 1}. You can retry as many times as needed.
             </span>
           </div>
         )}
