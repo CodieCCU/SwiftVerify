@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/CodieCCU/SwiftVerify/internal/db"
 	"github.com/CodieCCU/SwiftVerify/internal/models"
@@ -113,7 +114,7 @@ func (h *LandlordHandler) ValidateToken(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Check if token is expired
-	if tokenModel.ExpiresAt.Before(http.TimeFunc()) {
+	if tokenModel.ExpiresAt.Before(time.Now()) {
 		http.Error(w, "Token expired", http.StatusGone)
 		return
 	}

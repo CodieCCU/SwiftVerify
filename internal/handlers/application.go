@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/CodieCCU/SwiftVerify/internal/db"
 	"github.com/CodieCCU/SwiftVerify/internal/models"
@@ -48,7 +49,7 @@ func (h *ApplicationHandler) SubmitApplication(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		if tokenModel.ExpiresAt.Before(http.TimeFunc()) {
+		if tokenModel.ExpiresAt.Before(time.Now()) {
 			http.Error(w, "Token expired", http.StatusGone)
 			return
 		}
