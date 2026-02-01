@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { logPageView, logUserAction, logAuthentication } from '../services/logger';
 
 const Home = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Log page view
+    logPageView('home', { user: user?.username });
+  }, [user]);
+
   const handleLogout = () => {
+    logAuthentication('logout', { user: user?.username });
     logout();
     navigate('/login');
   };
 
   const handleStartVerification = () => {
+    logUserAction('start_verification_clicked', { user: user?.username });
     navigate('/drivers-license');
   };
 

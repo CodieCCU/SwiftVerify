@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { logPageView, logUserAction, logDriversLicenseCheck, logFormSubmit, logAuthentication } from '../services/logger';
 
 const DriversLicense = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +12,11 @@ const DriversLicense = () => {
   const [inputMethod, setInputMethod] = useState('manual'); // 'manual' or 'scan'
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Log page view
+    logPageView('drivers_license', { user: user?.username });
+  }, [user]);
 
   // Email validation regex
   const validateEmail = (email) => {
@@ -31,6 +37,7 @@ const DriversLicense = () => {
   const handleEmailBlur = () => {
     if (email && !validateEmail(email)) {
       setEmailError('Please enter a valid email address');
+      logUserAction('email_validation_failed', { reason: 'Invalid format' });
     }
   };
 
@@ -40,13 +47,29 @@ const DriversLicense = () => {
     // Validate email before submission
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
+      logDriversLicenseCheck('form_validation_failed', { reason: 'Invalid email' });
       return;
     }
 
     if (inputMethod === 'manual' && !licenseNumber) {
       setLicenseError('Please enter your driver\'s license number');
+      logDriversLicenseCheck('form_validation_failed', { reason: 'Missing license number' });
       return;
     }
+
+    // Log form submission (with sanitized data)
+    logFormSubmit('drivers_license_form', {
+      email,
+      inputMethod,
+      hasLicenseNumber: !!licenseNumber,
+    });
+
+    // Log driver's license check initiation
+    logDriversLicenseCheck('verification_initiated', {
+      email,
+      inputMethod,
+      user: user?.username,
+    });
 
     // Navigate to verification processing screen
     navigate('/verification-processing', {
@@ -59,6 +82,7 @@ const DriversLicense = () => {
   };
 
   const handleLogout = () => {
+    logAuthentication('logout', { user: user?.username, page: 'drivers_license' });
     logout();
     navigate('/login');
   };
@@ -66,6 +90,7 @@ const DriversLicense = () => {
   const handleScanLicense = () => {
     // Simulated scan - in production this would integrate with camera/scanner
     setInputMethod('scan');
+    logUserAction('scan_license_clicked', { user: user?.username });
     setScanNotification('Camera/Scanner integration is not yet available. Please use manual entry.');
     setTimeout(() => {
       setScanNotification('');
@@ -75,6 +100,7 @@ const DriversLicense = () => {
 
   const handleLicenseNumberChange = (e) => {
     setLicenseNumber(e.target.value);
+    logUserAction('license_number_input', { length: e.target.value.length });
     if (licenseError) {
       setLicenseError('');
     }
@@ -205,7 +231,10 @@ const DriversLicense = () => {
                 }}>
                   <button
                     type="button"
-                    onClick={() => setInputMethod('manual')}
+                    onClick={() => {
+                      setInputMethod('manual');
+                      logUserAction('manual_entry_selected', { user: user?.username });
+                    }}
                     style={{
                       flex: 1,
                       padding: '0.75rem',

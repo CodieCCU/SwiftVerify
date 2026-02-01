@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { logAuthentication, logPageView, logUserAction } from '../services/logger';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -9,15 +10,32 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Log page view
+    logPageView('login');
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     
+    // Log login attempt
+    logAuthentication('login_attempt', { username });
+    
     if (login(username, password)) {
+      // Log successful login
+      logAuthentication('login_success', { username });
       navigate('/home');
     } else {
+      // Log failed login
+      logAuthentication('login_failed', { username, reason: 'Invalid credentials' });
       setError('Invalid credentials');
     }
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    logUserAction('input_change', { field: 'username' });
   };
 
   return (
@@ -47,7 +65,7 @@ const Login = () => {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -66,7 +84,10 @@ const Login = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                logUserAction('input_change', { field: 'password' });
+              }}
               style={{
                 width: '100%',
                 padding: '0.75rem',
