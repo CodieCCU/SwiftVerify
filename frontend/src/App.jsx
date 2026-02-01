@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import DriversLicense from './pages/DriversLicense';
 import VerificationProcessing from './pages/VerificationProcessing';
 import VerificationResult from './pages/VerificationResult';
+import DocumentUpload from './pages/DocumentUpload';
+import StaffAssisted from './pages/StaffAssisted';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -15,6 +17,8 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/staff-assisted" element={<ProtectedRoute><StaffAssisted /></ProtectedRoute>} />
+          <Route path="/document-upload" element={<ProtectedRoute><DocumentUpload /></ProtectedRoute>} />
           <Route path="/drivers-license" element={<ProtectedRoute><DriversLicense /></ProtectedRoute>} />
           <Route path="/verification-processing" element={<ProtectedRoute><VerificationProcessing /></ProtectedRoute>} />
           <Route path="/verification-result" element={<ProtectedRoute><VerificationResult /></ProtectedRoute>} />

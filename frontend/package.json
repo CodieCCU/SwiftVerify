@@ -1,12 +1,13 @@
 {
   "name": "swiftverify-frontend",
-  "version": "1.0.0",
-  "description": "SwiftVerify - Path to Yes fintech platform for Boise rental market",
+  "version": "2.0.0",
+  "description": "SwiftVerify - Secure identity verification platform for housing applications with remote and community access",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src --ext js,jsx"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -16,6 +17,17 @@
   },
   "devDependencies": {
     "vite": "^5.0.0",
-    "@vitejs/plugin-react": "^4.2.0"
-  }
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite-plugin-pwa": "^0.17.0"
+  },
+  "keywords": [
+    "identity-verification",
+    "housing",
+    "fintech",
+    "security",
+    "mfa",
+    "pwa"
+  ],
+  "author": "SwiftVerify Team",
+  "license": "MIT"
 }
