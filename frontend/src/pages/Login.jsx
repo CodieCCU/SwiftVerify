@@ -14,7 +14,12 @@ const Login = () => {
     setError('');
     
     if (login(username, password)) {
-      navigate('/home');
+      // Simple role detection - landlords have "landlord" in username
+      if (username.toLowerCase().includes('landlord')) {
+        navigate('/landlord-dashboard');
+      } else {
+        navigate('/home');
+      }
     } else {
       setError('Invalid credentials');
     }
@@ -104,6 +109,19 @@ const Login = () => {
             Login
           </button>
         </form>
+        
+        <div style={{
+          marginTop: '1.5rem',
+          padding: '1rem',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '4px',
+          fontSize: '0.875rem',
+          color: '#666'
+        }}>
+          <p style={{ margin: '0 0 0.5rem 0', fontWeight: '500' }}>Demo Accounts:</p>
+          <p style={{ margin: '0.25rem 0' }}>• Tenant: any username without "landlord"</p>
+          <p style={{ margin: '0.25rem 0' }}>• Landlord: username with "landlord" (e.g., "landlord1")</p>
+        </div>
       </div>
     </div>
   );

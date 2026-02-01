@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import DriversLicense from './pages/DriversLicense';
 import VerificationProcessing from './pages/VerificationProcessing';
 import VerificationResult from './pages/VerificationResult';
+import LandlordDashboard from './pages/LandlordDashboard';
+import Reapply from './pages/Reapply';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -18,6 +20,8 @@ const App = () => {
           <Route path="/drivers-license" element={<ProtectedRoute><DriversLicense /></ProtectedRoute>} />
           <Route path="/verification-processing" element={<ProtectedRoute><VerificationProcessing /></ProtectedRoute>} />
           <Route path="/verification-result" element={<ProtectedRoute><VerificationResult /></ProtectedRoute>} />
+          <Route path="/landlord-dashboard" element={<ProtectedRoute><LandlordDashboard /></ProtectedRoute>} />
+          <Route path="/reapply" element={<Reapply />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
