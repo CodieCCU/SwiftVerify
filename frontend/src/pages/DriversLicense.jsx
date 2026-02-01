@@ -6,6 +6,8 @@ const DriversLicense = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [licenseNumber, setLicenseNumber] = useState('');
+  const [licenseError, setLicenseError] = useState('');
+  const [scanNotification, setScanNotification] = useState('');
   const [inputMethod, setInputMethod] = useState('manual'); // 'manual' or 'scan'
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ const DriversLicense = () => {
     }
 
     if (inputMethod === 'manual' && !licenseNumber) {
-      alert('Please enter your driver\'s license number');
+      setLicenseError('Please enter your driver\'s license number');
       return;
     }
 
@@ -63,8 +65,19 @@ const DriversLicense = () => {
 
   const handleScanLicense = () => {
     // Simulated scan - in production this would integrate with camera/scanner
-    alert('Camera/Scanner integration would go here. For demo, using manual input.');
-    setInputMethod('manual');
+    setInputMethod('scan');
+    setScanNotification('Camera/Scanner integration is not yet available. Please use manual entry.');
+    setTimeout(() => {
+      setScanNotification('');
+      setInputMethod('manual');
+    }, 3000);
+  };
+
+  const handleLicenseNumberChange = (e) => {
+    setLicenseNumber(e.target.value);
+    if (licenseError) {
+      setLicenseError('');
+    }
   };
 
   return (
@@ -114,6 +127,19 @@ const DriversLicense = () => {
           <h2 style={{ marginBottom: '1.5rem', color: '#333' }}>
             Driver's License Verification
           </h2>
+          
+          {scanNotification && (
+            <div style={{
+              backgroundColor: '#fff3e0',
+              color: '#e65100',
+              padding: '1rem',
+              borderRadius: '4px',
+              marginBottom: '1rem',
+              fontSize: '0.875rem'
+            }}>
+              {scanNotification}
+            </div>
+          )}
           
           <form onSubmit={handleSubmit}>
             {/* Email Field - Added as per requirements */}
@@ -216,21 +242,32 @@ const DriversLicense = () => {
               </div>
 
               {inputMethod === 'manual' && (
-                <input
-                  type="text"
-                  value={licenseNumber}
-                  onChange={(e) => setLicenseNumber(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box'
-                  }}
-                  placeholder="Enter your driver's license number"
-                  required
-                />
+                <>
+                  <input
+                    type="text"
+                    value={licenseNumber}
+                    onChange={handleLicenseNumberChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: licenseError ? '2px solid #d32f2f' : '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '1rem',
+                      boxSizing: 'border-box'
+                    }}
+                    placeholder="Enter your driver's license number"
+                    required
+                  />
+                  {licenseError && (
+                    <div style={{ 
+                      color: '#d32f2f', 
+                      marginTop: '0.25rem',
+                      fontSize: '0.875rem'
+                    }}>
+                      {licenseError}
+                    </div>
+                  )}
+                </>
               )}
             </div>
 

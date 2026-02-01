@@ -7,6 +7,12 @@ const VerificationProcessing = () => {
   const { email, licenseNumber, inputMethod } = location.state || {};
 
   useEffect(() => {
+    // Redirect to home if no state is provided
+    if (!email) {
+      navigate('/home', { replace: true });
+      return;
+    }
+
     // Simulate API call to Equifax or verification service
     // In production, this would make an actual API call
     const timer = setTimeout(() => {
@@ -18,7 +24,8 @@ const VerificationProcessing = () => {
           approved: isApproved,
           email,
           licenseNumber
-        }
+        },
+        replace: true
       });
     }, 3000); // 3 second delay to simulate processing
 

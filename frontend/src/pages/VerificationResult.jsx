@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth';
 
@@ -7,6 +7,13 @@ const VerificationResult = () => {
   const location = useLocation();
   const { logout } = useAuth();
   const { approved, email, licenseNumber } = location.state || {};
+
+  useEffect(() => {
+    // Redirect to home if no state is provided
+    if (approved === undefined) {
+      navigate('/home', { replace: true });
+    }
+  }, [approved, navigate]);
 
   const handleReturnHome = () => {
     navigate('/home');
@@ -20,6 +27,11 @@ const VerificationResult = () => {
   const handleTryAgain = () => {
     navigate('/drivers-license');
   };
+
+  // Don't render if no state
+  if (approved === undefined) {
+    return null;
+  }
 
   return (
     <div style={{ 
