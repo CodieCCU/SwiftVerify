@@ -1,21 +1,47 @@
-MIT License
+# SwiftVerify Proprietary Software License
+#### Copyright © 2026 Codie Morehead, All Rights Reserved.
 
-Copyright (c) 2026 CodieCCU
+This License governs the use of the SwiftVerify proprietary software (the "Software"). By accessing or using the Software, you (the "User") agree to the terms set forth in this License. Failure to comply with these terms will result in the immediate revocation of access rights.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+---
+#### **1. Ownership of the Software**
+The Software, including but not limited to its codebase, user interfaces, dashboards, security protocols, and any associated materials, is copyrighted by Codie Morehead and remains the sole intellectual property of the Licensor, Codie Morehead. All rights, title, and interest in and to the Software are reserved.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+---
+#### **2. Permitted Use**  
+- Landlords, property managers, and tenants are allowed to use the Software solely for the purpose of conducting legitimate business with SwiftVerify.  
+- Users may only access the designated **User Interface (UI)**, **Landlord Dashboard**, or **Tenant Dashboard** provided for their role. Users are strictly prohibited from accessing any underlying code or unauthorized portions of the Software.  
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+---
+#### **3. Restrictions**  
+- Users **may not**:
+  - Modify, distribute, reverse engineer, decompile, disassemble, or derive source code from any part of the Software.
+  - Copy or reproduce any part of the Software, including its code, security protocols, or UI.
+  - Store, save, or otherwise back up any part of the Software to a computer, phone, CD, DVD, flash drive, cloud service, or any other type of storage device.
+  - Take screenshots, photographs, or recordings of the Software, UI, or system unless explicitly authorized in writing by SwiftVerify.
+  - Use third-party tools or services, such as Google Chrome’s Developer Tools, console applications, or any code extraction utilities, to view, modify, or analyze any part of the Software.
+
+- This license immediately terminates and voids access to the Software if these restrictions are violated.
+
+---
+#### **4. Obligations**
+- **Reporting of Unintended Access**:  
+    If you unintentionally view or access any code or unauthorized parts of the Software, you are required to:
+    - Immediately stop all access.
+    - Notify SwiftVerify of the incident in writing at **support@swiftverify.com**.
+
+- **Breach by Third Parties**:  
+    You agree to report any third parties attempting to reverse engineer or otherwise manipulate the Software.
+
+---
+#### **5. No Transfer of Rights**
+This License does not convey or grant any ownership rights to the User. All access is provided as a revocable license at the sole discretion of Codie Morehead. Users must comply with all terms outlined in this agreement.
+
+---
+#### **6. Breach and Legal Action**
+- Any breach of this License will result in immediate termination of access.  
+- Codie Morehead reserves the right to pursue legal action to recover damages or prevent further unauthorized use.
+
+---
+#### **7. Disclaimer of Warranties**
+The Software is provided as-is without warranties of any kind. Codie Morehead does not guarantee the operation, availability, or functionality of the Software.
