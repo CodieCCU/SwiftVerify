@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { saveFormData, getFormData, hasSavedData, getTimeSinceSave, getAttemptCount } from '../utils/storage';
 
 const DriversLicense = () => {
   const [email, setEmail] = useState('');
@@ -9,8 +10,39 @@ const DriversLicense = () => {
   const [licenseError, setLicenseError] = useState('');
   const [scanNotification, setScanNotification] = useState('');
   const [inputMethod, setInputMethod] = useState('manual'); // 'manual' or 'scan'
+  const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
+  const [recoveryData, setRecoveryData] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Check for saved data on component mount
+  useEffect(() => {
+    if (hasSavedData()) {
+      const saved = getFormData();
+      setRecoveryData(saved);
+      setShowRecoveryBanner(true);
+    }
+  }, []);
+
+  // Auto-save form data when it changes
+  useEffect(() => {
+    if (email || licenseNumber) {
+      saveFormData({ email, licenseNumber, inputMethod });
+    }
+  }, [email, licenseNumber, inputMethod]);
+
+  const handleRecoverData = () => {
+    if (recoveryData) {
+      setEmail(recoveryData.email || '');
+      setLicenseNumber(recoveryData.licenseNumber || '');
+      setInputMethod(recoveryData.inputMethod || 'manual');
+      setShowRecoveryBanner(false);
+    }
+  };
+
+  const handleDismissRecovery = () => {
+    setShowRecoveryBanner(false);
+  };
 
   // Email validation regex
   const validateEmail = (email) => {
@@ -48,12 +80,15 @@ const DriversLicense = () => {
       return;
     }
 
+    const currentAttempts = getAttemptCount();
+
     // Navigate to verification processing screen
     navigate('/verification-processing', {
       state: {
         email,
         licenseNumber,
-        inputMethod
+        inputMethod,
+        retryCount: currentAttempts
       }
     });
   };
@@ -118,6 +153,82 @@ const DriversLicense = () => {
         margin: '2rem auto',
         padding: '0 1rem'
       }}>
+        {/* Recovery Banner */}
+        {showRecoveryBanner && recoveryData && (
+          <div style={{
+            backgroundColor: '#e3f2fd',
+            border: '2px solid #1976d2',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div style={{ flex: 1 }}>
+              <strong style={{ color: '#1976d2', display: 'block', marginBottom: '0.25rem' }}>
+                📋 Previous Data Found
+              </strong>
+              <span style={{ fontSize: '0.875rem', color: '#555' }}>
+                We found data you entered {getTimeSinceSave()}. Would you like to recover it?
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
+              <button
+                onClick={handleRecoverData}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#1976d2',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Recover
+              </button>
+              <button
+                onClick={handleDismissRecovery}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: 'white',
+                  color: '#666',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Retry Counter */}
+        {getAttemptCount() > 0 && (
+          <div style={{
+            backgroundColor: '#fff3e0',
+            padding: '0.75rem 1rem',
+            borderRadius: '4px',
+            marginBottom: '1rem',
+            fontSize: '0.875rem',
+            color: '#e65100',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <span>🔄</span>
+            <span>
+              This is attempt #{getAttemptCount() + 1}. Don't worry, you can retry as many times as needed.
+            </span>
+          </div>
+        )}
+
         <div style={{
           backgroundColor: 'white',
           padding: '2rem',

@@ -32,3 +32,37 @@ CREATE TABLE activities (
 
 -- Indexing geography columns for performance
 CREATE INDEX idx_locations_geom ON locations USING GIST(geom);
+
+-- Schema for tenant verifications
+CREATE TABLE tenant_verifications (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    email VARCHAR(100) NOT NULL,
+    license_number VARCHAR(50),
+    verification_status VARCHAR(50) NOT NULL, -- 'pending', 'approved', 'denied', 'data_freeze', 'error'
+    error_type VARCHAR(100), -- 'data_freeze', 'server_timeout', 'network_error', etc.
+    error_message TEXT,
+    retry_count INT DEFAULT 0,
+    equifax_response JSONB, -- Store the full Equifax API response
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for faster queries on user_id and status
+CREATE INDEX idx_tenant_verifications_user_id ON tenant_verifications(user_id);
+CREATE INDEX idx_tenant_verifications_status ON tenant_verifications(verification_status);
+
+-- Schema for verification attempt logs (analytics)
+CREATE TABLE verification_attempt_logs (
+    id SERIAL PRIMARY KEY,
+    verification_id INT REFERENCES tenant_verifications(id),
+    attempt_number INT NOT NULL,
+    attempt_status VARCHAR(50) NOT NULL, -- 'success', 'failed', 'data_freeze'
+    error_type VARCHAR(100),
+    error_details TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for analytics queries
+CREATE INDEX idx_verification_logs_verification_id ON verification_attempt_logs(verification_id);
+CREATE INDEX idx_verification_logs_status ON verification_attempt_logs(attempt_status);

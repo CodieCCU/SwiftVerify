@@ -1,21 +1,41 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { clearFormData, resetAttemptCount, getAttemptCount } from '../utils/storage';
 
 const VerificationResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
-  const { approved, email, licenseNumber } = location.state || {};
+  const { 
+    approved, 
+    email, 
+    licenseNumber, 
+    errorType, 
+    errorMessage,
+    retryAllowed = true,
+    verificationDetails 
+  } = location.state || {};
 
   useEffect(() => {
     // Redirect to home if no state is provided
     if (approved === undefined) {
       navigate('/home', { replace: true });
     }
+
+    // Clear saved data if verification was successful
+    if (approved) {
+      clearFormData();
+      resetAttemptCount();
+    }
   }, [approved, navigate]);
 
   const handleReturnHome = () => {
+    // Clear data on successful approval
+    if (approved) {
+      clearFormData();
+      resetAttemptCount();
+    }
     navigate('/home');
   };
 
@@ -25,6 +45,7 @@ const VerificationResult = () => {
   };
 
   const handleTryAgain = () => {
+    // Don't clear form data - let user retry with saved data
     navigate('/drivers-license');
   };
 
@@ -32,6 +53,8 @@ const VerificationResult = () => {
   if (approved === undefined) {
     return null;
   }
+
+  const attemptCount = getAttemptCount();
 
   return (
     <div style={{ 
@@ -72,7 +95,7 @@ const VerificationResult = () => {
           color: approved ? '#4caf50' : '#f44336',
           fontSize: '2rem'
         }}>
-          {approved ? 'Verification Approved' : 'Verification Denied'}
+          {approved ? 'Verification Approved' : 'Verification Failed'}
         </h2>
 
         {/* Message */}
@@ -84,9 +107,30 @@ const VerificationResult = () => {
         }}>
           {approved 
             ? 'Your identity has been successfully verified. You can now proceed with your application.'
-            : 'We were unable to verify your identity at this time. Please check your information and try again, or contact support for assistance.'
+            : errorMessage || 'We were unable to verify your identity at this time. Please check your information and try again, or contact support for assistance.'
           }
         </p>
+
+        {/* Error Details (if any) */}
+        {!approved && errorType && (
+          <div style={{
+            backgroundColor: '#fff3e0',
+            padding: '1rem',
+            borderRadius: '4px',
+            marginBottom: '1.5rem',
+            textAlign: 'left',
+            borderLeft: '4px solid #ff9800'
+          }}>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#e65100', fontSize: '0.875rem' }}>
+              Error Type: {errorType.replace(/_/g, ' ').toUpperCase()}
+            </h4>
+            {attemptCount > 0 && (
+              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#666' }}>
+                Attempts made: {attemptCount}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Information Summary */}
         <div style={{
@@ -116,6 +160,11 @@ const VerificationResult = () => {
             <p style={{ margin: '0.5rem 0' }}>
               <strong>Status:</strong> {approved ? 'Approved' : 'Denied'}
             </p>
+            {verificationDetails?.verification_id && (
+              <p style={{ margin: '0.5rem 0' }}>
+                <strong>Verification ID:</strong> {verificationDetails.verification_id}
+              </p>
+            )}
           </div>
         </div>
 
@@ -160,21 +209,23 @@ const VerificationResult = () => {
             </>
           ) : (
             <>
-              <button
-                onClick={handleTryAgain}
-                style={{
-                  padding: '1rem',
-                  backgroundColor: '#1976d2',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  fontWeight: '500'
-                }}
-              >
-                Try Again
-              </button>
+              {retryAllowed && (
+                <button
+                  onClick={handleTryAgain}
+                  style={{
+                    padding: '1rem',
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    fontWeight: '500'
+                  }}
+                >
+                  Try Again
+                </button>
+              )}
               <button
                 onClick={handleReturnHome}
                 style={{
@@ -199,10 +250,10 @@ const VerificationResult = () => {
           <div style={{
             marginTop: '2rem',
             padding: '1rem',
-            backgroundColor: '#fff3e0',
+            backgroundColor: '#e3f2fd',
             borderRadius: '4px',
             fontSize: '0.875rem',
-            color: '#e65100'
+            color: '#1976d2'
           }}>
             <strong>Need Help?</strong> Contact our support team at support@swiftverify.com
           </div>
