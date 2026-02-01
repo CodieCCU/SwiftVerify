@@ -64,8 +64,14 @@ export const AuthProvider = ({ children }) => {
       setToken(authToken);
       setIsAuthenticated(true);
       
-      // Extract username from token (in production, decode JWT properly)
-      setUser({ username: 'user' });
+      // Decode JWT to extract username (simple base64 decode - in production use a JWT library)
+      try {
+        const payload = JSON.parse(atob(authToken.split('.')[1]));
+        setUser({ username: payload.username || 'user' });
+      } catch (e) {
+        // Fallback if JWT parsing fails
+        setUser({ username: 'user' });
+      }
       
       return {
         success: true

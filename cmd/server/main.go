@@ -20,9 +20,19 @@ import (
 
 var (
 	jwtSecret = []byte(getEnvOrDefault("JWT_SECRET", "swiftverify-secret-key-change-in-production"))
+	allowedOrigins = getEnvOrDefault("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
 	upgrader  = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
-			return true // In production, implement proper origin checking
+			origin := r.Header.Get("Origin")
+			allowed := strings.Split(allowedOrigins, ",")
+			for _, allowedOrigin := range allowed {
+				if strings.TrimSpace(allowedOrigin) == origin {
+					return true
+				}
+			}
+			// Log unauthorized origin attempt for security monitoring
+			log.Printf("WebSocket connection denied from origin: %s", origin)
+			return false
 		},
 	}
 )
@@ -95,10 +105,15 @@ func main() {
 	api.HandleFunc("/health", handleHealth).Methods("GET")
 
 	// CORS middleware
+	allowedOrigins := []string{"http://localhost:5173", "http://localhost:3000"}
+	if envOrigins := os.Getenv("CORS_ORIGINS"); envOrigins != "" {
+		allowedOrigins = append(allowedOrigins, strings.Split(envOrigins, ",")...)
+	}
+	
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000", "*"},
+		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization", "X-MFA-Session"},
 		AllowCredentials: true,
 	})
 
@@ -131,7 +146,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	// Log login attempt
 	logAudit("LOGIN_ATTEMPT", req.Username, r.RemoteAddr, fmt.Sprintf("User: %s", req.Username), r.UserAgent())
 
-	// Simple authentication (in production, check against database with hashed passwords)
+	// NOTE: This is a DEMO authentication implementation
+	// In production, validate credentials against a database with hashed passwords
+	// Example: user, err := db.ValidateUser(req.Username, req.Password)
+	// if err != nil { return unauthorized }
 	if req.Username != "" && req.Password != "" {
 		// Simulate MFA requirement for enhanced security
 		mfaRequired := true // In production, check user settings
@@ -346,8 +364,13 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// Store username and role in headers for handlers to use
-		// In production, use context.Context with proper key/value pairs
+		// KNOWN LIMITATION: Using headers to pass claims to handlers
+		// This is a simplified approach for this demo implementation
+		// PRODUCTION TODO: Implement proper context-based approach:
+		// type contextKey string
+		// const userContextKey contextKey = "user"
+		// ctx := context.WithValue(r.Context(), userContextKey, claims)
+		// r = r.WithContext(ctx)
 		r.Header.Set("X-Username", claims.Username)
 		r.Header.Set("X-Role", claims.Role)
 		
@@ -387,7 +410,12 @@ func logAudit(action, user, ipAddress, details, deviceInfo string) {
 
 func generateRandomString(length int) string {
 	b := make([]byte, length)
-	rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		// Log error and use fallback
+		log.Printf("Error generating random string: %v", err)
+		// Fallback to timestamp-based string (less secure but better than panicking)
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
 	return base64.URLEncoding.EncodeToString(b)[:length]
 }
 
