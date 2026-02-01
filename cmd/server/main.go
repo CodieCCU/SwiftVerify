@@ -219,14 +219,14 @@ func handleMFAVerify(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	username := r.Header.Get("X-Username")
 	logAudit("LOGOUT", username, r.RemoteAddr, "User logged out", r.UserAgent())
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Logged out successfully"})
 }
 
 func handleVerification(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	username := r.Header.Get("X-Username")
 	
 	var req VerificationRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -249,7 +249,7 @@ func handleVerification(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleFileUpload(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	username := r.Header.Get("X-Username")
 	
 	// Parse multipart form (max 10MB)
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
@@ -278,7 +278,7 @@ func handleFileUpload(w http.ResponseWriter, r *http.Request) {
 
 func handleGetAuditLogs(w http.ResponseWriter, r *http.Request) {
 	// In production, implement proper authorization for admin users
-	role := r.Context().Value("role").(string)
+	role := r.Header.Get("X-Role")
 	if role != "admin" {
 		// For demo, allow all authenticated users
 		// http.Error(w, "Unauthorized", http.StatusForbidden)
@@ -346,13 +346,8 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// Add claims to request context
-		ctx := r.Context()
-		ctx = r.WithContext(ctx)
-		r = r.WithContext(ctx)
-		
-		// Store username and role in context for handlers to use
-		// This is a simplified approach - in production use proper context values
+		// Store username and role in headers for handlers to use
+		// In production, use context.Context with proper key/value pairs
 		r.Header.Set("X-Username", claims.Username)
 		r.Header.Set("X-Role", claims.Role)
 		
