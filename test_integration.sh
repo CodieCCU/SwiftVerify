@@ -31,7 +31,12 @@ CREATE_RESPONSE=$(curl -s -X POST "$API_URL/api/drivers-license" \
 echo "Response: $CREATE_RESPONSE"
 
 # Extract record reference ID
-RECORD_REF_ID=$(echo "$CREATE_RESPONSE" | grep -o '"record_reference_id":"[^"]*"' | cut -d'"' -f4)
+# Use jq if available, otherwise fall back to grep/cut
+if command -v jq &> /dev/null; then
+  RECORD_REF_ID=$(echo "$CREATE_RESPONSE" | jq -r '.record_reference_id')
+else
+  RECORD_REF_ID=$(echo "$CREATE_RESPONSE" | grep -o '"record_reference_id":"[^"]*"' | cut -d'"' -f4)
+fi
 
 if [ -z "$RECORD_REF_ID" ]; then
   echo "ERROR: Failed to create driver's license record"

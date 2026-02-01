@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/CodieCCU/SwiftVerify/internal/database"
 )
@@ -24,6 +25,7 @@ func (ns *NotificationService) SendDeletionEmail(email, recordRefID string) erro
 	// In production, implement actual email sending logic
 	log.Printf("Sending deletion notification to %s for record %s", email, recordRefID)
 	
+	currentDate := time.Now().Format("2006-01-02")
 	emailBody := fmt.Sprintf(`
 Dear User,
 
@@ -41,7 +43,7 @@ Thank you for using SwiftVerify.
 
 Best regards,
 SwiftVerify Team
-	`, recordRefID[:16]+"...", "today")
+	`, recordRefID[:16]+"...", currentDate)
 	
 	// Log the email content (in production, send via email service)
 	log.Printf("Email body: %s", emailBody)

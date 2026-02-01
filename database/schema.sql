@@ -47,8 +47,7 @@ CREATE TABLE drivers_licenses (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     expiration_date TIMESTAMPTZ NOT NULL, -- Auto-calculated as created_at + 30 days
     deleted_at TIMESTAMPTZ, -- Soft delete timestamp
-    encryption_key_id VARCHAR(64), -- Reference to encryption key
-    CONSTRAINT chk_expiration CHECK (expiration_date = created_at + INTERVAL '30 days')
+    encryption_key_id VARCHAR(64) -- Reference to encryption key
 );
 
 -- Immutable audit log for all Driver's License operations (WORM-style)
