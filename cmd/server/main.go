@@ -118,9 +118,6 @@ func handleVerifyLicense(w http.ResponseWriter, r *http.Request) {
 }
 
 func performVerification(licenseNumber string, method string) VerificationResponse {
-	// Seed random for mock data
-	rand.Seed(time.Now().UnixNano())
-
 	// Mock property data
 	properties := []string{"Boise Heights Apartments", "River View Residences", "Downtown Lofts", "Garden Court Estates"}
 	property := properties[rand.Intn(len(properties))]

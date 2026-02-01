@@ -28,7 +28,7 @@ const DriversLicense = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/verify-license', {
+      const response = await axios.post('/api/verify-license', {
         licenseNumber: licenseNumber,
         method: 'manual'
       });
@@ -57,7 +57,7 @@ const DriversLicense = () => {
       formData.append('license', licenseFile);
       formData.append('method', 'scan');
 
-      const response = await axios.post('http://localhost:8080/api/verify-license', formData, {
+      const response = await axios.post('/api/verify-license', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
