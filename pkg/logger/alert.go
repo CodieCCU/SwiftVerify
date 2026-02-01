@@ -2,7 +2,6 @@ package logger
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 	"sync"
 
@@ -69,14 +68,14 @@ func (am *AlertManager) matchesAlert(log models.AuditLog, config models.AlertCon
 }
 
 // triggerAlert sends an alert notification
-func (am *AlertManager) triggerAlert(log models.AuditLog, config models.AlertConfiguration) {
+func (am *AlertManager) triggerAlert(auditLog models.AuditLog, config models.AlertConfiguration) {
 	// In production, this would send emails, webhooks, etc.
 	// For now, we'll log to console
-	log.Printf("ALERT [%s]: %s - %s (Severity: %s)\n",
+	fmt.Printf("ALERT [%s]: %s - %s (Severity: %s)\n",
 		config.Name,
-		log.Category,
-		log.Action,
-		log.Severity,
+		auditLog.Category,
+		auditLog.Action,
+		auditLog.Severity,
 	)
 
 	// TODO: Implement actual notification mechanisms:

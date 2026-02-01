@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { logPageView, logDriversLicenseCheck, logAPICall } from '../services/logger';
 
 const VerificationProcessing = () => {
   const navigate = useNavigate();
@@ -7,11 +8,22 @@ const VerificationProcessing = () => {
   const { email, licenseNumber, inputMethod } = location.state || {};
 
   useEffect(() => {
+    // Log page view
+    logPageView('verification_processing', { email, inputMethod });
+
     // Redirect to home if no state is provided
     if (!email) {
+      logDriversLicenseCheck('processing_failed', { reason: 'Missing email data' });
       navigate('/home', { replace: true });
       return;
     }
+
+    // Log verification processing started
+    logDriversLicenseCheck('verification_processing_started', {
+      email,
+      inputMethod,
+      hasLicenseNumber: !!licenseNumber,
+    });
 
     // Simulate API call to Equifax or verification service
     // In production, this would make an actual API call
@@ -19,6 +31,19 @@ const VerificationProcessing = () => {
       // Simulate random approval/denial for demo
       const isApproved = Math.random() > 0.3; // 70% approval rate for demo
       
+      // Log API call completion (simulated)
+      logAPICall('equifax_api_call_completed', {
+        email,
+        result: isApproved ? 'approved' : 'denied',
+        processingTime: '3000ms',
+      });
+
+      // Log verification result
+      logDriversLicenseCheck('verification_completed', {
+        email,
+        result: isApproved ? 'approved' : 'denied',
+      });
+
       navigate('/verification-result', {
         state: {
           approved: isApproved,
@@ -30,7 +55,7 @@ const VerificationProcessing = () => {
     }, 3000); // 3 second delay to simulate processing
 
     return () => clearTimeout(timer);
-  }, [navigate, email, licenseNumber]);
+  }, [navigate, email, licenseNumber, inputMethod]);
 
   return (
     <div style={{ 

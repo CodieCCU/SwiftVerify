@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { logPageView, logUserAction, logDriversLicenseCheck, logAuthentication } from '../services/logger';
 
 const VerificationResult = () => {
   const navigate = useNavigate();
@@ -9,22 +10,41 @@ const VerificationResult = () => {
   const { approved, email, licenseNumber } = location.state || {};
 
   useEffect(() => {
+    // Log page view with result
+    if (approved !== undefined) {
+      logPageView('verification_result', {
+        email,
+        result: approved ? 'approved' : 'denied',
+      });
+
+      // Log the final result
+      logDriversLicenseCheck('verification_result_displayed', {
+        email,
+        result: approved ? 'approved' : 'denied',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     // Redirect to home if no state is provided
     if (approved === undefined) {
+      logDriversLicenseCheck('result_page_error', { reason: 'No verification data' });
       navigate('/home', { replace: true });
     }
-  }, [approved, navigate]);
+  }, [approved, email, navigate]);
 
   const handleReturnHome = () => {
+    logUserAction('return_home_clicked', { result: approved ? 'approved' : 'denied' });
     navigate('/home');
   };
 
   const handleLogout = () => {
+    logAuthentication('logout', { page: 'verification_result', result: approved ? 'approved' : 'denied' });
     logout();
     navigate('/login');
   };
 
   const handleTryAgain = () => {
+    logUserAction('try_again_clicked', { previousResult: 'denied' });
     navigate('/drivers-license');
   };
 
