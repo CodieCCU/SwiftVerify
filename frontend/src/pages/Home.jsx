@@ -53,6 +53,25 @@ const Home = () => {
         margin: '2rem auto',
         padding: '0 1rem'
       }}>
+        {/* SSN Non-Storage Notice - Dashboard */}
+        <div style={{
+          backgroundColor: '#e3f2fd',
+          border: '2px solid #1976d2',
+          padding: '1rem',
+          borderRadius: '8px',
+          marginBottom: '1.5rem',
+          fontSize: '0.875rem'
+        }}>
+          <strong style={{ color: '#1976d2', display: 'block', marginBottom: '0.5rem' }}>
+            🔒 Privacy & Security Notice
+          </strong>
+          <p style={{ margin: 0, color: '#333', lineHeight: '1.5' }}>
+            <strong>SwiftVerify does NOT store Social Security Numbers (SSNs)</strong> in any form. 
+            This includes plaintext, encrypted, hashed, or any equivalent form. Your privacy and 
+            security are our top priorities.
+          </p>
+        </div>
+
         <div style={{
           backgroundColor: 'white',
           padding: '2rem',

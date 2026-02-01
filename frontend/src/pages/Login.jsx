@@ -39,6 +39,25 @@ const Login = () => {
         <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#333' }}>
           SwiftVerify Login
         </h2>
+
+        {/* SSN Non-Storage Notice - Onboarding */}
+        <div style={{
+          backgroundColor: '#e3f2fd',
+          border: '1px solid #1976d2',
+          padding: '1rem',
+          borderRadius: '4px',
+          marginBottom: '1.5rem',
+          fontSize: '0.875rem'
+        }}>
+          <strong style={{ color: '#1976d2', display: 'block', marginBottom: '0.5rem' }}>
+            Privacy Notice
+          </strong>
+          <p style={{ margin: 0, color: '#333', lineHeight: '1.5' }}>
+            SwiftVerify does NOT store Social Security Numbers (SSNs) in any form—not in 
+            plaintext, encrypted, hashed, or any equivalent form.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#555' }}>
@@ -104,6 +123,22 @@ const Login = () => {
             Login
           </button>
         </form>
+
+        <div style={{ 
+          marginTop: '1.5rem', 
+          textAlign: 'center',
+          fontSize: '0.875rem'
+        }}>
+          <a 
+            href="/privacy-policy" 
+            style={{ 
+              color: '#1976d2',
+              textDecoration: 'none'
+            }}
+          >
+            View Privacy Policy
+          </a>
+        </div>
       </div>
     </div>
   );
