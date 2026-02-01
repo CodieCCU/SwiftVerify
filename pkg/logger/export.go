@@ -1,7 +1,9 @@
 package logger
 
 import (
+	"crypto/sha256"
 	"encoding/csv"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +12,23 @@ import (
 
 	"github.com/CodieCCU/SwiftVerify/pkg/models"
 )
+
+// CalculateLogHash generates SHA-256 hash of log entry for integrity verification
+func CalculateLogHash(log models.AuditLog) (string, error) {
+	// Create a deterministic representation for hashing
+	hashInput := fmt.Sprintf("%s|%s|%s|%s|%s|%v|%s",
+		log.Timestamp.Format(time.RFC3339Nano),
+		log.Category,
+		log.Action,
+		log.Severity,
+		log.Source,
+		log.Metadata,
+		log.PreviousHash,
+	)
+
+	hash := sha256.Sum256([]byte(hashInput))
+	return hex.EncodeToString(hash[:]), nil
+}
 
 // ExportToCSV exports audit logs to CSV format for analysis
 func ExportToCSV(logs []models.AuditLog, outputPath string) error {
@@ -121,12 +140,6 @@ func VerifyLogIntegrity(logs []models.AuditLog) (bool, error) {
 		return true, nil
 	}
 
-	logger, err := NewLogger("/tmp/verify")
-	if err != nil {
-		return false, err
-	}
-	defer logger.Close()
-
 	previousHash := ""
 	for i, log := range logs {
 		// Verify previous hash matches
@@ -136,7 +149,7 @@ func VerifyLogIntegrity(logs []models.AuditLog) (bool, error) {
 		}
 
 		// Recalculate and verify hash
-		calculatedHash, err := logger.calculateHash(log)
+		calculatedHash, err := CalculateLogHash(log)
 		if err != nil {
 			return false, fmt.Errorf("failed to calculate hash at index %d: %w", i, err)
 		}

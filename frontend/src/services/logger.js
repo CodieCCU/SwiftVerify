@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// API base URL - configurable via environment variable
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+
 // Log categories matching backend
 export const LogCategory = {
   AUTHENTICATION: 'Authentication',
@@ -90,7 +93,7 @@ const log = async (category, action, severity, metadata = {}, errorDetails = nul
     }
 
     // Send to backend
-    await axios.post('http://localhost:8080/api/logs', logEntry, {
+    await axios.post(`${API_BASE_URL}/api/logs`, logEntry, {
       headers: {
         'Content-Type': 'application/json',
       },

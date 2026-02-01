@@ -1,12 +1,11 @@
 package logger
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -107,19 +106,7 @@ func (l *Logger) Log(entry models.LogEntry) error {
 
 // calculateHash generates SHA-256 hash of log entry for integrity verification
 func (l *Logger) calculateHash(log models.AuditLog) (string, error) {
-	// Create a deterministic representation for hashing
-	hashInput := fmt.Sprintf("%s|%s|%s|%s|%s|%v|%s",
-		log.Timestamp.Format(time.RFC3339Nano),
-		log.Category,
-		log.Action,
-		log.Severity,
-		log.Source,
-		log.Metadata,
-		log.PreviousHash,
-	)
-
-	hash := sha256.Sum256([]byte(hashInput))
-	return hex.EncodeToString(hash[:]), nil
+	return CalculateLogHash(log)
 }
 
 // Close closes the log file
@@ -155,11 +142,11 @@ func sanitizeMetadata(data map[string]interface{}) map[string]interface{} {
 
 	for key, value := range data {
 		isSensitive := false
-		lowerKey := key
+		lowerKey := strings.ToLower(key)
 		
 		// Check if field contains sensitive data
 		for _, sensitive := range sensitiveFields {
-			if contains(lowerKey, sensitive) {
+			if strings.Contains(lowerKey, sensitive) {
 				isSensitive = true
 				break
 			}
@@ -178,13 +165,6 @@ func sanitizeMetadata(data map[string]interface{}) map[string]interface{} {
 // sanitizeData sanitizes request/response data
 func sanitizeData(data map[string]interface{}) map[string]interface{} {
 	return sanitizeMetadata(data)
-}
-
-// contains checks if a string contains a substring (case-insensitive)
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && 
-		(s == substr || len(s) > len(substr) && 
-		(s[:len(substr)] == substr || s[len(s)-len(substr):] == substr))
 }
 
 // LogInfo logs an informational message

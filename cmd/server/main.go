@@ -21,8 +21,12 @@ var upgrader = websocket.Upgrader{
 }
 
 var auditLogger *logger.Logger
+var serverStartTime time.Time
 
 func main() {
+	// Track server start time for uptime calculation
+	serverStartTime = time.Now()
+
 	// Initialize audit logger
 	var err error
 	auditLogger, err = logger.NewLogger("./logs")
@@ -234,6 +238,6 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":    "healthy",
 		"timestamp": time.Now().Format(time.RFC3339),
-		"uptime":    time.Since(time.Now()).String(), // Would be actual uptime in production
+		"uptime":    time.Since(serverStartTime).String(),
 	})
 }
