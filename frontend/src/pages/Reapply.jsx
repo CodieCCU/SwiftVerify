@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -21,17 +21,7 @@ const Reapply = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setError('No token provided');
-      setValidating(false);
-      return;
-    }
-
-    validateToken();
-  }, [token]);
-
-  const validateToken = async () => {
+  const validateToken = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/landlord/token/${token}/validate`);
       
@@ -54,7 +44,17 @@ const Reapply = () => {
     } finally {
       setValidating(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) {
+      setError('No token provided');
+      setValidating(false);
+      return;
+    }
+
+    validateToken();
+  }, [token, validateToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

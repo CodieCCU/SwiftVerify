@@ -86,10 +86,13 @@ func (h *LandlordHandler) CreateReapplicationLink(w http.ResponseWriter, r *http
 	})
 
 	// Return token info (in production, also send email)
+	// NOTE: The 'link' field is a relative path. The frontend should construct
+	// the full URL by prepending the appropriate protocol and domain.
+	// Alternatively, pass the base URL as a configuration to return a full URL.
 	response := map[string]interface{}{
-		"success": true,
-		"token":   token.Token,
-		"link":    "/reapply?token=" + token.Token,
+		"success":    true,
+		"token":      token.Token,
+		"link":       "/reapply?token=" + token.Token,
 		"expires_at": token.ExpiresAt,
 	}
 

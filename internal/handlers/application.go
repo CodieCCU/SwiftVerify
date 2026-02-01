@@ -7,6 +7,7 @@ import (
 
 	"github.com/CodieCCU/SwiftVerify/internal/db"
 	"github.com/CodieCCU/SwiftVerify/internal/models"
+	"github.com/CodieCCU/SwiftVerify/internal/utils"
 )
 
 type ApplicationHandler struct {
@@ -64,15 +65,32 @@ func (h *ApplicationHandler) SubmitApplication(w http.ResponseWriter, r *http.Re
 		req.UnitID = tokenModel.UnitID
 	}
 
-	// In production, encrypt sensitive data before storing
-	// For demonstration, we'll store them with a simple prefix
+	// Encrypt sensitive data before storing
+	encryptedDL, err := utils.EncryptData(req.DriversLicenseNumber)
+	if err != nil {
+		http.Error(w, "Failed to encrypt data", http.StatusInternalServerError)
+		return
+	}
+
+	encryptedSSN, err := utils.EncryptData(req.SSN)
+	if err != nil {
+		http.Error(w, "Failed to encrypt data", http.StatusInternalServerError)
+		return
+	}
+
+	encryptedAddress, err := utils.EncryptData(req.CurrentAddress)
+	if err != nil {
+		http.Error(w, "Failed to encrypt data", http.StatusInternalServerError)
+		return
+	}
+
 	app := &models.Application{
 		UnitID:                        req.UnitID,
 		Email:                         req.Email,
 		Status:                        "pending",
-		DriversLicenseNumberEncrypted: "encrypted:" + req.DriversLicenseNumber,
-		SSNEncrypted:                  "encrypted:" + req.SSN,
-		CurrentAddressEncrypted:       "encrypted:" + req.CurrentAddress,
+		DriversLicenseNumberEncrypted: encryptedDL,
+		SSNEncrypted:                  encryptedSSN,
+		CurrentAddressEncrypted:       encryptedAddress,
 	}
 
 	if err := h.db.CreateApplication(app); err != nil {

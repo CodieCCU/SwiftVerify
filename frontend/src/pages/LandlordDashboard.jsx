@@ -14,7 +14,11 @@ const LandlordDashboard = () => {
   const [tenantEmail, setTenantEmail] = useState('');
   const [generatedLink, setGeneratedLink] = useState('');
 
-  // Mock landlord ID - in production, this would come from authenticated session
+  // SECURITY NOTE: Hardcoded landlord ID for demo purposes only
+  // In production, this MUST:
+  // 1. Come from an authenticated session (JWT token)
+  // 2. Be validated on the backend for every request
+  // 3. Include proper authorization checks (user can only access their own data)
   const landlordId = 1;
 
   useEffect(() => {

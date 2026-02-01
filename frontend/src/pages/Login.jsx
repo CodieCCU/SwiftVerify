@@ -14,7 +14,11 @@ const Login = () => {
     setError('');
     
     if (login(username, password)) {
-      // Simple role detection - landlords have "landlord" in username
+      // SECURITY NOTE: This is demo-only role detection
+      // In production, roles should be:
+      // 1. Assigned on the backend after authentication
+      // 2. Verified through secure JWT tokens
+      // 3. Never based on username content
       if (username.toLowerCase().includes('landlord')) {
         navigate('/landlord-dashboard');
       } else {
