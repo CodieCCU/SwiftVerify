@@ -67,6 +67,26 @@ const Home = () => {
             Welcome to SwiftVerify! We need to verify your identity to proceed. 
             This process is quick and secure.
           </p>
+          
+          <div style={{
+            marginBottom: '2rem',
+            padding: '1rem',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '4px',
+            border: '1px solid #4caf50',
+            textAlign: 'left'
+          }}>
+            <div style={{ 
+              fontSize: '0.875rem',
+              color: '#2e7d32',
+              lineHeight: '1.5'
+            }}>
+              <strong>Privacy Notice:</strong> SwiftVerify does NOT store, access, or retrieve 
+              Social Security Numbers (SSNs) or SSN-related reports. We verify your identity 
+              using only your driver's license and email address.
+            </div>
+          </div>
+          
           <button
             onClick={handleStartVerification}
             style={{

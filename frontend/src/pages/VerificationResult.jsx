@@ -93,7 +93,7 @@ const VerificationResult = () => {
           backgroundColor: '#f5f5f5',
           padding: '1.5rem',
           borderRadius: '4px',
-          marginBottom: '2rem',
+          marginBottom: '1rem',
           textAlign: 'left'
         }}>
           <h3 style={{ 
@@ -117,6 +117,22 @@ const VerificationResult = () => {
               <strong>Status:</strong> {approved ? 'Approved' : 'Denied'}
             </p>
           </div>
+        </div>
+        
+        <div style={{
+          marginBottom: '2rem',
+          padding: '1rem',
+          backgroundColor: '#e8f5e9',
+          borderRadius: '4px',
+          border: '1px solid #4caf50',
+          fontSize: '0.875rem',
+          color: '#2e7d32',
+          lineHeight: '1.5',
+          textAlign: 'left'
+        }}>
+          <strong>Privacy Notice:</strong> SwiftVerify does NOT store, access, or retrieve 
+          Social Security Numbers (SSNs) or SSN-related reports. Your verification was completed 
+          using only your driver's license and email address.
         </div>
 
         {/* Action Buttons */}

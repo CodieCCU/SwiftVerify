@@ -104,6 +104,23 @@ const Login = () => {
             Login
           </button>
         </form>
+        
+        <div style={{
+          marginTop: '1.5rem',
+          padding: '1rem',
+          backgroundColor: '#e8f5e9',
+          borderRadius: '4px',
+          border: '1px solid #4caf50'
+        }}>
+          <div style={{ 
+            fontSize: '0.875rem',
+            color: '#2e7d32',
+            lineHeight: '1.5'
+          }}>
+            <strong>Privacy Notice:</strong> SwiftVerify does NOT store, access, or retrieve 
+            Social Security Numbers (SSNs) or SSN-related reports.
+          </div>
+        </div>
       </div>
     </div>
   );

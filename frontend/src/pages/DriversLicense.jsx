@@ -292,13 +292,33 @@ const DriversLicense = () => {
           <div style={{
             marginTop: '1.5rem',
             padding: '1rem',
-            backgroundColor: '#e3f2fd',
+            backgroundColor: '#e8f5e9',
             borderRadius: '4px',
-            fontSize: '0.875rem',
-            color: '#1976d2'
+            border: '1px solid #4caf50'
           }}>
-            <strong>Privacy Notice:</strong> Your information is encrypted and securely processed 
-            according to industry standards.
+            <div style={{ 
+              fontSize: '0.875rem',
+              color: '#2e7d32',
+              lineHeight: '1.5',
+              marginBottom: '0.5rem'
+            }}>
+              <strong>Privacy & SSN Policy:</strong>
+            </div>
+            <div style={{ 
+              fontSize: '0.875rem',
+              color: '#2e7d32',
+              lineHeight: '1.5'
+            }}>
+              • SwiftVerify does NOT store, access, or retrieve Social Security Numbers (SSNs) 
+              or SSN-related reports.
+            </div>
+            <div style={{ 
+              fontSize: '0.875rem',
+              color: '#2e7d32',
+              lineHeight: '1.5'
+            }}>
+              • Your information is encrypted and securely processed according to industry standards.
+            </div>
           </div>
         </div>
       </div>
