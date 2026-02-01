@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import DriversLicense from './pages/DriversLicense';
 import VerificationProcessing from './pages/VerificationProcessing';
 import VerificationResult from './pages/VerificationResult';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/drivers-license" element={<ProtectedRoute><DriversLicense /></ProtectedRoute>} />
           <Route path="/verification-processing" element={<ProtectedRoute><VerificationProcessing /></ProtectedRoute>} />
           <Route path="/verification-result" element={<ProtectedRoute><VerificationResult /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
