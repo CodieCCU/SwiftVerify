@@ -48,8 +48,8 @@ const DriversLicense = () => {
       return;
     }
 
-    // Navigate to verification processing screen
-    navigate('/verification-processing', {
+    // Navigate to background check status screen
+    navigate('/background-check-status', {
       state: {
         email,
         licenseNumber,
