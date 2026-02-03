@@ -8,7 +8,7 @@ const PropertyCard = ({ property }) => {
     <div
       onClick={() => navigate(`/property/${property.id}`)}
       style={{
-        backgroundColor: 'white',
+        backgroundColor: '#16213e',
         borderRadius: '12px',
         overflow: 'hidden',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -72,7 +72,7 @@ const PropertyCard = ({ property }) => {
         <h3 style={{
           margin: '0 0 0.5rem 0',
           fontSize: '1.25rem',
-          color: '#333',
+          color: 'white',
           fontWeight: '600'
         }}>
           {property.address}
@@ -80,7 +80,7 @@ const PropertyCard = ({ property }) => {
         
         <p style={{
           margin: '0 0 1rem 0',
-          color: '#666',
+          color: '#a0a0a0',
           fontSize: '0.875rem'
         }}>
           {property.city}, {property.state} {property.zip}
@@ -91,7 +91,7 @@ const PropertyCard = ({ property }) => {
           gap: '1rem',
           marginBottom: '1rem',
           fontSize: '0.875rem',
-          color: '#555'
+          color: '#a0a0a0'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
             <span>🛏️</span>
@@ -117,7 +117,7 @@ const PropertyCard = ({ property }) => {
           <div style={{
             fontSize: '1.5rem',
             fontWeight: '700',
-            color: '#1976d2'
+            color: '#e94560'
           }}>
             ${property.rent.toLocaleString()}/mo
           </div>

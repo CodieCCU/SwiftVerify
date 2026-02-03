@@ -56,14 +56,14 @@ const StatusIndicator = ({ status, label, isActive = false }) => {
       </div>
       <div>
         <div style={{
-          color: '#333',
+          color: 'white',
           fontWeight: '500',
           fontSize: '0.875rem'
         }}>
           {label}
         </div>
         <div style={{
-          color: '#666',
+          color: '#a0a0a0',
           fontSize: '0.75rem',
           textTransform: 'capitalize'
         }}>

@@ -37,7 +37,7 @@ const ApplicationCard = ({ application, onSendLease, onViewDetails }) => {
 
   return (
     <div style={{
-      backgroundColor: 'white',
+      backgroundColor: '#0f3460',
       borderRadius: '12px',
       padding: '1.5rem',
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -53,14 +53,14 @@ const ApplicationCard = ({ application, onSendLease, onViewDetails }) => {
           <h3 style={{
             margin: '0 0 0.5rem 0',
             fontSize: '1.25rem',
-            color: '#333',
+            color: 'white',
             fontWeight: '600'
           }}>
             {application.applicantName}
           </h3>
           <p style={{
             margin: 0,
-            color: '#666',
+            color: '#a0a0a0',
             fontSize: '0.875rem'
           }}>
             {application.email}
@@ -89,34 +89,34 @@ const ApplicationCard = ({ application, onSendLease, onViewDetails }) => {
         borderRadius: '8px'
       }}>
         <div>
-          <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#a0a0a0', marginBottom: '0.25rem' }}>
             Property
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#333', fontWeight: '500' }}>
+          <div style={{ fontSize: '0.875rem', color: 'white', fontWeight: '500' }}>
             {application.propertyAddress}
           </div>
         </div>
         <div>
-          <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#a0a0a0', marginBottom: '0.25rem' }}>
             Application Date
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#333', fontWeight: '500' }}>
+          <div style={{ fontSize: '0.875rem', color: 'white', fontWeight: '500' }}>
             {new Date(application.applicationDate).toLocaleDateString()}
           </div>
         </div>
         <div>
-          <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#a0a0a0', marginBottom: '0.25rem' }}>
             Income Verified
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#333', fontWeight: '500' }}>
+          <div style={{ fontSize: '0.875rem', color: 'white', fontWeight: '500' }}>
             {application.incomeVerified ? '✓ Yes' : '✗ No'}
           </div>
         </div>
         <div>
-          <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#a0a0a0', marginBottom: '0.25rem' }}>
             Background Check
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#333', fontWeight: '500' }}>
+          <div style={{ fontSize: '0.875rem', color: 'white', fontWeight: '500' }}>
             {application.backgroundCheckPassed ? '✓ Passed' : '✗ Failed'}
           </div>
         </div>
@@ -148,7 +148,7 @@ const ApplicationCard = ({ application, onSendLease, onViewDetails }) => {
             style={{
               flex: 1,
               padding: '0.75rem',
-              backgroundColor: '#1976d2',
+              backgroundColor: '#e94560',
               color: 'white',
               border: 'none',
               borderRadius: '6px',

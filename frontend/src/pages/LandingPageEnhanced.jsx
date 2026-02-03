@@ -304,7 +304,7 @@ const LandingPageEnhanced = () => {
             </div>
             <div>
               <div style={{ fontSize: '2.5rem', fontWeight: '700', color: '#e94560', marginBottom: '0.5rem' }}>
-                &lt;5 min
+                {'<'}5 min
               </div>
               <div style={{ color: '#a0a0a0', fontSize: '0.875rem' }}>
                 Average Processing Time
