@@ -1,51 +1,74 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authAPI } from './utils/api';
 
 const AuthContext = createContext(null);
 
-// Admin credentials
-const ADMIN_USER = {
-  username: 'ADMINSWIFTVERIFYCODIE',
-  password: 'Marine@781227@@@',
-  role: 'admin',
-  permissions: ['all']
-};
-
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (username, password) => {
-    // Admin authentication with absolute control
-    if (username === ADMIN_USER.username && password === ADMIN_USER.password) {
-      setIsAuthenticated(true);
-      setUser({
-        username: ADMIN_USER.username,
-        role: ADMIN_USER.role,
-        permissions: ADMIN_USER.permissions,
-        isAdmin: true
-      });
-      return true;
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('userData');
+    
+    if (token && userData) {
+      setUser(JSON.parse(userData));
     }
-    return false;
+    setLoading(false);
+  }, []);
+
+  const login = async (credentials) => {
+    try {
+      const response = await authAPI.login(credentials);
+      const { token, user: userData } = response.data;
+      
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('userData', JSON.stringify(userData));
+      setUser(userData);
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Login failed' };
+    }
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
+  const logout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userData');
+      setUser(null);
+    }
   };
 
-  // Admin helper function to check permissions
-  const hasPermission = (permission) => {
-    if (!user) return false;
-    if (user.permissions.includes('all')) return true;
-    return user.permissions.includes(permission);
+  const register = async (userData) => {
+    try {
+      const response = await authAPI.register(userData);
+      const { token, user: newUser } = response.data;
+      
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('userData', JSON.stringify(newUser));
+      setUser(newUser);
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Registration failed' };
+    }
   };
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, hasPermission }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    login,
+    logout,
+    register,
+    loading,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

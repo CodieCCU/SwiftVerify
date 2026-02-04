@@ -1,90 +1,141 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../auth';
+import Navbar from '../components/Navbar';
+import { Card, FCRANotice } from '../components/UIComponents';
 
 const Home = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const handleStartVerification = () => {
-    navigate('/drivers-license');
-  };
+  const verificationSteps = [
+    {
+      title: 'Driver\'s License Verification',
+      description: 'Verify your identity with your driver\'s license',
+      link: '/driver-license',
+      icon: '🪪',
+      status: 'pending'
+    },
+    {
+      title: 'Employment & Income',
+      description: 'Submit employment details and verify income',
+      link: '/employment',
+      icon: '💼',
+      status: 'pending'
+    },
+    {
+      title: 'Background Check',
+      description: 'Complete criminal and background verification',
+      link: '/background-check',
+      icon: '🔍',
+      status: 'pending'
+    },
+    {
+      title: 'Application Approval',
+      description: 'Review and sign your rental agreement',
+      link: '/approval',
+      icon: '✅',
+      status: 'pending'
+    }
+  ];
 
   return (
-    <div style={{ 
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <nav style={{
-        backgroundColor: '#1976d2',
-        padding: '1rem 2rem',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <h1 style={{ margin: 0, fontSize: '1.5rem' }}>SwiftVerify</h1>
-        <div>
-          <span style={{ marginRight: '1rem' }}>Welcome, {user?.username}</span>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: 'white',
-              color: '#1976d2',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: '500'
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
-      
-      <div style={{
-        maxWidth: '800px',
-        margin: '2rem auto',
-        padding: '0 1rem'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '2rem',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          textAlign: 'center'
-        }}>
-          <h2 style={{ marginBottom: '1rem', color: '#333' }}>
-            Identity Verification
-          </h2>
-          <p style={{ color: '#666', marginBottom: '2rem', lineHeight: '1.6' }}>
-            Welcome to SwiftVerify! We need to verify your identity to proceed. 
-            This process is quick and secure.
-          </p>
-          <button
-            onClick={handleStartVerification}
-            style={{
-              padding: '1rem 2rem',
-              backgroundColor: '#1976d2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1.1rem',
-              cursor: 'pointer',
-              fontWeight: '500'
-            }}
-          >
-            Start Verification
-          </button>
+    <>
+      <Navbar />
+      <div className="page-container">
+        <div className="container">
+          <Card>
+            <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+              Welcome, {user?.name || 'Tenant'}! 👋
+            </h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem' }}>
+              Complete your rental verification to get fast approval for your new home.
+            </p>
+          </Card>
+
+          <FCRANotice />
+
+          <Card title="Your Verification Journey">
+            <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>
+              Follow these steps to complete your rental application. Each step is designed to be quick and secure.
+            </p>
+
+            <div className="grid grid-2">
+              {verificationSteps.map((step, index) => (
+                <Link 
+                  key={index} 
+                  to={step.link}
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <div 
+                    className="card" 
+                    style={{ 
+                      cursor: 'pointer',
+                      border: '2px solid var(--border-color)',
+                      transition: 'all 0.3s',
+                      height: '100%'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--primary-color)';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border-color)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'var(--shadow)';
+                    }}
+                  >
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+                      {step.icon}
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                      {step.title}
+                    </h3>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                      {step.description}
+                    </p>
+                    <div style={{ 
+                      display: 'inline-block',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '1rem',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      backgroundColor: '#FEF3C7',
+                      color: '#92400E'
+                    }}>
+                      {step.status === 'pending' ? 'Not Started' : step.status}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Card>
+
+          <Card title="Why SwiftVerify?">
+            <div className="grid grid-3">
+              <div>
+                <h4 style={{ marginBottom: '0.5rem', fontWeight: 600 }}>⚡ Fast Processing</h4>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                  Get approved in minutes, not days
+                </p>
+              </div>
+              <div>
+                <h4 style={{ marginBottom: '0.5rem', fontWeight: 600 }}>🔒 Secure & Private</h4>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                  Bank-level encryption for your data
+                </p>
+              </div>
+              <div>
+                <h4 style={{ marginBottom: '0.5rem', fontWeight: 600 }}>✓ FCRA Compliant</h4>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                  Fully compliant with federal regulations
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
