@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 const Home = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect landlords to their dashboard
+    if (user?.role === 'landlord') {
+      navigate('/landlord/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleLogout = () => {
     logout();
@@ -14,6 +21,11 @@ const Home = () => {
   const handleStartVerification = () => {
     navigate('/drivers-license');
   };
+
+  // Don't show this page to landlords (they get redirected)
+  if (user?.role === 'landlord') {
+    return null;
+  }
 
   return (
     <div style={{ 
@@ -61,12 +73,31 @@ const Home = () => {
           textAlign: 'center'
         }}>
           <h2 style={{ marginBottom: '1rem', color: '#333' }}>
-            Identity Verification
+            Multi-Stage Identity Verification
           </h2>
           <p style={{ color: '#666', marginBottom: '2rem', lineHeight: '1.6' }}>
-            Welcome to SwiftVerify! We need to verify your identity to proceed. 
-            This process is quick and secure.
+            Welcome to SwiftVerify! We use a comprehensive 5-stage verification process to ensure 
+            secure and thorough tenant screening. This includes identity verification, employment 
+            verification, and background checks.
           </p>
+          
+          <div style={{ 
+            backgroundColor: '#e3f2fd', 
+            padding: '1.5rem', 
+            borderRadius: '8px', 
+            marginBottom: '2rem',
+            textAlign: 'left'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#1976d2' }}>Verification Stages:</h3>
+            <ol style={{ margin: 0, paddingLeft: '1.5rem', color: '#555' }}>
+              <li style={{ marginBottom: '0.5rem' }}>Identity Verification (Driver's License)</li>
+              <li style={{ marginBottom: '0.5rem' }}>Employment & Income Verification</li>
+              <li style={{ marginBottom: '0.5rem' }}>Background & Credit Checks</li>
+              <li style={{ marginBottom: '0.5rem' }}>Landlord Review</li>
+              <li style={{ marginBottom: '0.5rem' }}>Final Decision</li>
+            </ol>
+          </div>
+          
           <button
             onClick={handleStartVerification}
             style={{

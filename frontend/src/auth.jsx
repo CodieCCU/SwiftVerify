@@ -10,6 +10,14 @@ const ADMIN_USER = {
   permissions: ['all']
 };
 
+// Demo landlord credentials
+const LANDLORD_USER = {
+  username: 'landlord@swiftverify.com',
+  password: 'landlord123',
+  role: 'landlord',
+  permissions: ['review_applications', 'manage_policies', 'view_analytics']
+};
+
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -26,6 +34,31 @@ export const AuthProvider = ({ children }) => {
       });
       return true;
     }
+    
+    // Landlord authentication
+    if (username === LANDLORD_USER.username && password === LANDLORD_USER.password) {
+      setIsAuthenticated(true);
+      setUser({
+        username: LANDLORD_USER.username,
+        role: LANDLORD_USER.role,
+        permissions: LANDLORD_USER.permissions,
+        isLandlord: true
+      });
+      return true;
+    }
+    
+    // Default tenant login for demo (any other credentials)
+    if (username && password) {
+      setIsAuthenticated(true);
+      setUser({
+        username: username,
+        role: 'tenant',
+        permissions: ['submit_application', 'view_status'],
+        isTenant: true
+      });
+      return true;
+    }
+    
     return false;
   };
 
@@ -34,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Admin helper function to check permissions
+  // Admin/Landlord helper function to check permissions
   const hasPermission = (permission) => {
     if (!user) return false;
     if (user.permissions.includes('all')) return true;
