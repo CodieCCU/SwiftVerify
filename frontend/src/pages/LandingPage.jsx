@@ -21,6 +21,18 @@ const LandingPage = () => {
         </div>
       </nav>
 
+      {/* NO CREDIT CHECK Banner */}
+      <div style={{
+        backgroundColor: '#ffc107',
+        color: '#000',
+        padding: '1rem 2rem',
+        textAlign: 'center',
+        fontWeight: '700',
+        fontSize: '1.2rem'
+      }}>
+        🚫💳 NO CREDIT CHECK APPROVAL SYSTEM - Your Credit Score Doesn't Matter!
+      </div>
+
       {/* Hero Section */}
       <div style={{
         backgroundColor: '#1976d2',
@@ -29,11 +41,11 @@ const LandingPage = () => {
         textAlign: 'center'
       }}>
         <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: '700' }}>
-          Fast, Secure Identity Verification
+          Get Approved Without a Credit Check
         </h2>
-        <p style={{ fontSize: '1.25rem', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
-          SwiftVerify provides real-time income-to-expense verification for the Boise rental market. 
-          Get verified in minutes, not days.
+        <p style={{ fontSize: '1.25rem', marginBottom: '2rem', maxWidth: '700px', margin: '0 auto 2rem' }}>
+          SwiftVerify is a <strong>NO CREDIT CHECK</strong> tenant screening system. 
+          We approve you based on your current income and employment - not your credit history.
         </p>
         <button
           onClick={() => navigate('/verify')}
@@ -59,7 +71,23 @@ const LandingPage = () => {
           Why Choose SwiftVerify?
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {/* Feature 1 */}
+          {/* Feature 1 - NO CREDIT CHECK */}
+          <div style={{
+            backgroundColor: '#fff3cd',
+            padding: '2rem',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            textAlign: 'center',
+            border: '3px solid #ffc107'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚫💳</div>
+            <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#333' }}>NO CREDIT CHECK</h4>
+            <p style={{ color: '#666', lineHeight: '1.6' }}>
+              Your credit score doesn't matter. We approve you based on current income and employment only.
+            </p>
+          </div>
+
+          {/* Feature 2 */}
           <div style={{
             backgroundColor: 'white',
             padding: '2rem',
@@ -74,21 +102,6 @@ const LandingPage = () => {
             </p>
           </div>
 
-          {/* Feature 2 */}
-          <div style={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
-            <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#333' }}>Bank-Level Security</h4>
-            <p style={{ color: '#666', lineHeight: '1.6' }}>
-              Your data is encrypted and protected with industry-leading security standards.
-            </p>
-          </div>
-
           {/* Feature 3 */}
           <div style={{
             backgroundColor: 'white',
@@ -97,10 +110,10 @@ const LandingPage = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
-            <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#333' }}>Trusted by Landlords</h4>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💼</div>
+            <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#333' }}>Path to Yes</h4>
             <p style={{ color: '#666', lineHeight: '1.6' }}>
-              Property managers across Boise trust SwiftVerify for reliable tenant screening.
+              If you have stable employment and income, you can get approved - regardless of your credit history.
             </p>
           </div>
         </div>
@@ -110,7 +123,7 @@ const LandingPage = () => {
       <div style={{ backgroundColor: 'white', padding: '4rem 2rem' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h3 style={{ textAlign: 'center', fontSize: '2rem', marginBottom: '3rem', color: '#333' }}>
-            How It Works
+            How It Works - NO CREDIT CHECK
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -128,8 +141,8 @@ const LandingPage = () => {
                 flexShrink: 0
               }}>1</div>
               <div>
-                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>Enter Your Information</h4>
-                <p style={{ margin: 0, color: '#666' }}>Provide your email and driver's license details.</p>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>Verify Your Identity</h4>
+                <p style={{ margin: 0, color: '#666' }}>Provide your driver's license information for identity verification.</p>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -147,8 +160,8 @@ const LandingPage = () => {
                 flexShrink: 0
               }}>2</div>
               <div>
-                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>We Verify Your Identity</h4>
-                <p style={{ margin: 0, color: '#666' }}>Our system securely verifies your information in real-time.</p>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>Confirm Employment & Income</h4>
+                <p style={{ margin: 0, color: '#666' }}>We verify your employment and income through Equifax Work Number - NO CREDIT CHECK.</p>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -166,8 +179,8 @@ const LandingPage = () => {
                 flexShrink: 0
               }}>3</div>
               <div>
-                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>Get Your Results</h4>
-                <p style={{ margin: 0, color: '#666' }}>Receive instant verification results and proceed with your rental application.</p>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#333' }}>Get Approved!</h4>
+                <p style={{ margin: 0, color: '#666' }}>Approved based on your current financial stability - your credit history doesn't matter!</p>
               </div>
             </div>
           </div>
