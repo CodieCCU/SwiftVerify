@@ -60,7 +60,7 @@ const DriversLicense = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleScanLicense = () => {

@@ -21,7 +21,7 @@ const VerificationResult = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleTryAgain = () => {
