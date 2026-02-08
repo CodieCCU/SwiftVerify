@@ -17,6 +17,19 @@ const LandingPage = () => {
       }}>
         <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700' }}>SwiftVerify</h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <a 
+            href="https://www.swift-verify.org" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              color: 'white', 
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              fontWeight: '500'
+            }}
+          >
+            Visit swift-verify.org
+          </a>
           <span style={{ fontSize: '0.9rem' }}>Path to Yes</span>
         </div>
       </nav>
@@ -48,7 +61,7 @@ const LandingPage = () => {
           We approve you based on your current income and employment - not your credit history.
         </p>
         <button
-          onClick={() => navigate('/drivers-license')}
+          onClick={() => navigate('/consent')}
           style={{
             padding: '1rem 3rem',
             fontSize: '1.2rem',
@@ -61,7 +74,7 @@ const LandingPage = () => {
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}
         >
-          Start Verification
+          Get Started
         </button>
       </div>
 
@@ -186,7 +199,7 @@ const LandingPage = () => {
           </div>
           <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <button
-              onClick={() => navigate('/drivers-license')}
+              onClick={() => navigate('/consent')}
               style={{
                 padding: '1rem 3rem',
                 fontSize: '1.1rem',
@@ -213,7 +226,7 @@ const LandingPage = () => {
       }}>
         <p style={{ margin: '0 0 0.5rem' }}>© 2026 SwiftVerify - Path to Yes Fintech Platform</p>
         <p style={{ margin: 0, fontSize: '0.875rem', color: '#aaa' }}>
-          Serving the Boise Rental Market | <a href="mailto:support@swiftverify.com" style={{ color: '#aaa' }}>support@swiftverify.com</a>
+          Serving the Boise Rental Market | <a href="https://www.swift-verify.org" target="_blank" rel="noopener noreferrer" style={{ color: '#aaa' }}>www.swift-verify.org</a> | <a href="mailto:support@swiftverify.com" style={{ color: '#aaa' }}>support@swiftverify.com</a>
         </p>
       </footer>
     </div>
