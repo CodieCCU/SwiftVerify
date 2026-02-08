@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { landlordLogin } from '../services/landlord';
+import { landlordLogin } from '../../services/landlord';
 
 const LandlordLogin = () => {
   const navigate = useNavigate();
