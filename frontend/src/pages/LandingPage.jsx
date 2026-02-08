@@ -48,7 +48,7 @@ const LandingPage = () => {
           We approve you based on your current income and employment - not your credit history.
         </p>
         <button
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/drivers-license')}
           style={{
             padding: '1rem 3rem',
             fontSize: '1.2rem',
@@ -186,7 +186,7 @@ const LandingPage = () => {
           </div>
           <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/drivers-license')}
               style={{
                 padding: '1rem 3rem',
                 fontSize: '1.1rem',
