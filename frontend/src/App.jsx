@@ -9,6 +9,7 @@ import VerificationStatus from './pages/VerificationStatus';
 import DecisionScreen from './pages/DecisionScreen';
 import LeaseSigning from './pages/LeaseSigning';
 import ThankYou from './pages/ThankYou';
+import UnsubscribePage from './pages/UnsubscribePage';
 
 // Legacy pages (for backward compatibility)
 import Home from './pages/Home';
@@ -38,6 +39,9 @@ const App = () => {
           <Route path="/decision" element={<DecisionScreen />} />
           <Route path="/lease-signing" element={<LeaseSigning />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          
+          {/* Email Unsubscribe */}
+          <Route path="/unsubscribe/:token" element={<UnsubscribePage />} />
           
           {/* Legacy routes (backward compatibility) */}
           <Route path="/home" element={<Home />} />

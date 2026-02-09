@@ -34,6 +34,14 @@ func main() {
 	http.HandleFunc("/api/verification/employment", handlers.VerifyEmployment)
 	http.HandleFunc("/api/verification/background-check", handlers.RequestBackgroundCheck)
 	
+	// Email & Unsubscribe Endpoints
+	http.HandleFunc("/api/email/unsubscribe/", handlers.HandleUnsubscribe)
+	http.HandleFunc("/api/email/unsubscribe/verify/", handlers.HandleVerifyUnsubscribe)
+	
+	// Admin Unsubscribe & Audit Endpoints
+	http.HandleFunc("/api/admin/unsubscribe/list", handlers.HandleListUnsubscribes)
+	http.HandleFunc("/api/admin/unsubscribe/audit", handlers.HandleAuditLog)
+	
 	// ========================================
 	// PROHIBITED ENDPOINTS (Will never exist)
 	// ========================================
@@ -53,6 +61,12 @@ func main() {
 	fmt.Println("  POST /api/verification/identity")
 	fmt.Println("  POST /api/verification/employment")
 	fmt.Println("  POST /api/verification/background-check")
+	fmt.Println("")
+	fmt.Println("Email & Unsubscribe Endpoints:")
+	fmt.Println("  POST /api/email/unsubscribe/:token")
+	fmt.Println("  GET  /api/email/unsubscribe/verify/:token")
+	fmt.Println("  POST /api/admin/unsubscribe/list")
+	fmt.Println("  POST /api/admin/unsubscribe/audit")
 	fmt.Println("")
 	fmt.Println("⚠️  NO CREDIT CHECK - Credit endpoints are PROHIBITED")
 	
