@@ -1,145 +1,423 @@
 /**
- * Email service integration (AWS SES placeholders)
+ * Email service integration with AWS SES
+ * 
+ * This service provides production-ready email notifications using AWS SES
+ * with comprehensive error handling, retry logic, and legal compliance.
  */
 
-import { API_ENDPOINTS, EMAIL_TEMPLATES, LEGAL_DISCLAIMERS } from '../utils/constants';
+import { sendEmailWithRetry } from './awsSes';
+import {
+  denialEmailTemplate,
+  approvalEmailTemplate,
+  waiverEmailTemplate,
+  gapPayEmailTemplate,
+  landlordAlertEmailTemplate,
+  accountCreatedEmailTemplate,
+  htmlToPlainText,
+} from '../utils/emailTemplates';
+import { EMAIL_SUBJECTS } from '../utils/constants';
 
 /**
  * Send denial email with legal disclaimers
  * @param {Object} data - Email data
+ * @param {string} data.email - Recipient email address
+ * @param {string} data.reason - Denial reason
+ * @param {string} data.applicationId - Application ID
+ * @param {string} data.landlordEmail - Landlord email (optional, for CC)
+ * @returns {Promise<Object>} - Result object with success status
  */
 export const sendDenialEmail = async (data) => {
-  const { email, reason, applicationId } = data;
+  const { email, reason, applicationId, landlordEmail } = data;
   
-  console.log('📧 AWS SES - Sending Denial Email (Placeholder)');
-  console.log('Endpoint:', API_ENDPOINTS.SEND_DENIAL_EMAIL);
+  console.log('📧 AWS SES - Sending Denial Email');
   console.log('Recipient:', email);
+  console.log('Application ID:', applicationId);
   
-  const emailContent = {
-    to: email,
-    subject: EMAIL_TEMPLATES.DENIAL_SUBJECT,
-    html: EMAIL_TEMPLATES.DENIAL_BODY(reason),
-    metadata: {
+  try {
+    // Calculate appeal deadline (30 days from now)
+    const appealDeadline = new Date();
+    appealDeadline.setDate(appealDeadline.getDate() + 30);
+    const formattedDeadline = appealDeadline.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    
+    // Generate email template
+    const htmlBody = denialEmailTemplate({
+      reason,
       applicationId,
-      legalDisclaimer: LEGAL_DISCLAIMERS.DENIAL_NOT_EQUIFAX,
-      appealRights: LEGAL_DISCLAIMERS.APPEAL_RIGHTS,
-    },
-  };
-  
-  console.log('Email Content:', emailContent);
-  
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return {
-    success: true,
-    messageId: 'msg_' + Date.now(),
-    sentAt: new Date().toISOString(),
-  };
+      appealDeadline: formattedDeadline,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: email,
+      subject: EMAIL_SUBJECTS.DENIAL,
+      htmlBody,
+      textBody,
+      cc: landlordEmail ? [landlordEmail] : [],
+      tags: {
+        emailType: 'denial',
+        applicationId,
+      },
+    };
+    
+    // Send email with retry logic (3 attempts with exponential backoff)
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Denial email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send denial email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendDenialEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
 };
 
 /**
  * Send approval email
+ * @param {Object} data - Email data
+ * @param {string} data.email - Recipient email address
+ * @param {string} data.applicationId - Application ID
+ * @param {string} data.propertyAddress - Property address (optional)
+ * @param {string} data.leaseLink - Lease signing link (optional)
+ * @param {string} data.landlordName - Landlord name (optional)
+ * @returns {Promise<Object>} - Result object with success status
  */
 export const sendApprovalEmail = async (data) => {
-  const { email, applicationId } = data;
+  const { email, applicationId, propertyAddress, leaseLink, landlordName } = data;
   
-  console.log('📧 AWS SES - Sending Approval Email (Placeholder)');
-  console.log('Endpoint:', API_ENDPOINTS.SEND_APPROVAL_EMAIL);
+  console.log('📧 AWS SES - Sending Approval Email');
   console.log('Recipient:', email);
+  console.log('Application ID:', applicationId);
   
-  const emailContent = {
-    to: email,
-    subject: EMAIL_TEMPLATES.APPROVAL_SUBJECT,
-    html: `
-      <h2>Congratulations! Your Application is Approved</h2>
-      <p>Your rental application has been approved through SwiftVerify.</p>
-      <p>Next steps:</p>
-      <ol>
-        <li>Review and sign your lease agreement</li>
-        <li>Complete any required deposits</li>
-        <li>Schedule your move-in date</li>
-      </ol>
-      <p>Application ID: ${applicationId}</p>
-    `,
-  };
-  
-  console.log('Email Content:', emailContent);
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return {
-    success: true,
-    messageId: 'msg_' + Date.now(),
-    sentAt: new Date().toISOString(),
-  };
+  try {
+    // Generate email template
+    const htmlBody = approvalEmailTemplate({
+      applicationId,
+      propertyAddress,
+      leaseLink,
+      landlordName,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: email,
+      subject: EMAIL_SUBJECTS.APPROVAL,
+      htmlBody,
+      textBody,
+      tags: {
+        emailType: 'approval',
+        applicationId,
+      },
+    };
+    
+    // Send email with retry logic
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Approval email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send approval email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendApprovalEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
 };
 
 /**
  * Send waiver form email
+ * @param {Object} data - Email data
+ * @param {string} data.email - Recipient email address
+ * @param {number} data.waiverAmount - Waiver amount
+ * @param {string} data.applicationId - Application ID
+ * @param {string} data.landlordName - Landlord name (optional)
+ * @param {string} data.propertyAddress - Property address (optional)
+ * @returns {Promise<Object>} - Result object with success status
  */
 export const sendWaiverEmail = async (data) => {
-  const { email, waiverAmount, applicationId } = data;
+  const { email, waiverAmount, applicationId, landlordName, propertyAddress } = data;
   
-  console.log('📧 AWS SES - Sending Waiver Email (Placeholder)');
-  console.log('Endpoint:', API_ENDPOINTS.SEND_WAIVER_EMAIL);
+  console.log('📧 AWS SES - Sending Waiver Email');
   console.log('Recipient:', email);
+  console.log('Application ID:', applicationId);
   console.log('Waiver Amount:', waiverAmount);
   
-  const emailContent = {
-    to: email,
-    subject: EMAIL_TEMPLATES.WAIVER_SUBJECT,
-    html: `
-      <h2>Application Approved - Waiver Form Required</h2>
-      <p>Good news! Your application has been approved.</p>
-      <p>A waiver form in the amount of <strong>$${waiverAmount.toFixed(2)}</strong> is required to proceed.</p>
-      <p>Please review and acknowledge the waiver terms to continue with your lease signing.</p>
-      <p>Application ID: ${applicationId}</p>
-    `,
-  };
-  
-  console.log('Email Content:', emailContent);
-  
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return {
-    success: true,
-    messageId: 'msg_' + Date.now(),
-    sentAt: new Date().toISOString(),
-  };
+  try {
+    // Generate email template
+    const htmlBody = waiverEmailTemplate({
+      waiverAmount,
+      applicationId,
+      landlordName,
+      propertyAddress,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: email,
+      subject: EMAIL_SUBJECTS.WAIVER,
+      htmlBody,
+      textBody,
+      tags: {
+        emailType: 'waiver',
+        applicationId,
+        waiverAmount: waiverAmount.toString(),
+      },
+    };
+    
+    // Send email with retry logic
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Waiver email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send waiver email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendWaiverEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
 };
 
 /**
  * Send gap pay notification email
+ * @param {Object} data - Email data
+ * @param {string} data.email - Recipient email address
+ * @param {number} data.gapAmount - Gap pay amount per month
+ * @param {string} data.applicationId - Application ID
+ * @param {number} data.monthlyRent - Monthly rent amount (optional)
+ * @param {string} data.propertyAddress - Property address (optional)
+ * @returns {Promise<Object>} - Result object with success status
  */
 export const sendGapPayEmail = async (data) => {
-  const { email, gapAmount, applicationId } = data;
+  const { email, gapAmount, applicationId, monthlyRent, propertyAddress } = data;
   
-  console.log('📧 AWS SES - Sending Gap Pay Email (Placeholder)');
+  console.log('📧 AWS SES - Sending Gap Pay Email');
   console.log('Recipient:', email);
+  console.log('Application ID:', applicationId);
   console.log('Gap Amount:', gapAmount);
   
-  const emailContent = {
-    to: email,
-    subject: 'SwiftVerify Application Approved - Gap Pay Coverage',
-    html: `
-      <h2>Congratulations! Application Approved with Gap Pay</h2>
-      <p>Your application has been approved!</p>
-      <p>SwiftVerify will cover your income gap of <strong>$${gapAmount.toFixed(2)}/month</strong> to ensure you meet the landlord's income requirements.</p>
-      <p>You can now proceed with lease signing.</p>
-      <p>Application ID: ${applicationId}</p>
-    `,
-  };
+  try {
+    // Generate email template
+    const htmlBody = gapPayEmailTemplate({
+      gapAmount,
+      applicationId,
+      monthlyRent,
+      propertyAddress,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: email,
+      subject: EMAIL_SUBJECTS.GAP_PAY,
+      htmlBody,
+      textBody,
+      tags: {
+        emailType: 'gap_pay',
+        applicationId,
+        gapAmount: gapAmount.toString(),
+      },
+    };
+    
+    // Send email with retry logic
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Gap Pay email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send Gap Pay email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendGapPayEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
+};
+
+/**
+ * Send landlord alert email for new application
+ * @param {Object} data - Email data
+ * @param {string} data.landlordEmail - Landlord email address
+ * @param {string} data.applicantName - Applicant name
+ * @param {string} data.propertyAddress - Property address
+ * @param {string} data.applicationId - Application ID
+ * @param {string} data.dashboardLink - Dashboard link (optional)
+ * @returns {Promise<Object>} - Result object with success status
+ */
+export const sendLandlordAlertEmail = async (data) => {
+  const { landlordEmail, applicantName, propertyAddress, applicationId, dashboardLink } = data;
   
-  console.log('Email Content:', emailContent);
+  console.log('📧 AWS SES - Sending Landlord Alert Email');
+  console.log('Recipient:', landlordEmail);
+  console.log('Application ID:', applicationId);
   
-  await new Promise(resolve => setTimeout(resolve, 500));
+  try {
+    // Generate email template
+    const htmlBody = landlordAlertEmailTemplate({
+      applicantName,
+      propertyAddress,
+      applicationId,
+      dashboardLink,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: landlordEmail,
+      subject: EMAIL_SUBJECTS.LANDLORD_ALERT,
+      htmlBody,
+      textBody,
+      tags: {
+        emailType: 'landlord_alert',
+        applicationId,
+      },
+    };
+    
+    // Send email with retry logic
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Landlord alert email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send landlord alert email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendLandlordAlertEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
+};
+
+/**
+ * Send account created email with credentials
+ * @param {Object} data - Email data
+ * @param {string} data.email - User email address
+ * @param {string} data.temporaryPassword - Temporary password
+ * @param {string} data.dashboardLink - Dashboard link (optional)
+ * @returns {Promise<Object>} - Result object with success status
+ */
+export const sendAccountCreatedEmail = async (data) => {
+  const { email, temporaryPassword, dashboardLink } = data;
   
-  return {
-    success: true,
-    messageId: 'msg_' + Date.now(),
-    sentAt: new Date().toISOString(),
-  };
+  console.log('📧 AWS SES - Sending Account Created Email');
+  console.log('Recipient:', email);
+  
+  try {
+    // Generate email template
+    const htmlBody = accountCreatedEmailTemplate({
+      email,
+      temporaryPassword,
+      dashboardLink,
+    });
+    
+    const textBody = htmlToPlainText(htmlBody);
+    
+    // Prepare email parameters
+    const emailParams = {
+      to: email,
+      subject: EMAIL_SUBJECTS.ACCOUNT_CREATED,
+      htmlBody,
+      textBody,
+      tags: {
+        emailType: 'account_created',
+      },
+    };
+    
+    // Send email with retry logic
+    const result = await sendEmailWithRetry(emailParams, 3);
+    
+    if (result.success) {
+      console.log('✅ Account created email sent successfully');
+      console.log('Message ID:', result.messageId);
+    } else {
+      console.error('❌ Failed to send account created email:', result.error);
+    }
+    
+    return {
+      success: result.success,
+      messageId: result.messageId,
+      sentAt: new Date().toISOString(),
+      error: result.error,
+    };
+  } catch (error) {
+    console.error('❌ Error in sendAccountCreatedEmail:', error);
+    return {
+      success: false,
+      error: error.message,
+      sentAt: new Date().toISOString(),
+    };
+  }
 };
 
 export default {
@@ -147,4 +425,6 @@ export default {
   sendApprovalEmail,
   sendWaiverEmail,
   sendGapPayEmail,
+  sendLandlordAlertEmail,
+  sendAccountCreatedEmail,
 };
