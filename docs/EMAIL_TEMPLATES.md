@@ -564,5 +564,5 @@ Ensure emails are accessible:
 ## Support
 
 For template customization help:
-- SwiftVerify Support: support@swiftverify.com
-- Design Team: design@swiftverify.com
+- SwiftVerify Support: support@swift-verify.org
+- Technical Support: tech@swift-verify.org

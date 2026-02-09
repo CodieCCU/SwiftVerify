@@ -65,7 +65,7 @@ export const sendDenialEmail = async (data) => {
       },
     };
     
-    // Send email with retry logic (24-hour retry on failure)
+    // Send email with retry logic (3 attempts with exponential backoff)
     const result = await sendEmailWithRetry(emailParams, 3);
     
     if (result.success) {

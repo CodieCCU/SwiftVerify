@@ -353,7 +353,7 @@ export const gapPayEmailTemplate = ({ gapAmount, applicationId, monthlyRent, pro
       <h3>✅ Approved with Gap Pay Coverage</h3>
       <p style="margin: 0;">
         ${propertyAddress ? `<strong>Property:</strong> ${propertyAddress}<br>` : ''}
-        <strong>Gap Pay Amount:</strong> <span style="font-size: 18px; color: #28a745;">$${gapAmount.toFixed(2)}/month</span><br>
+        <strong>💰 Gap Pay Amount:</strong> <span style="font-size: 18px; font-weight: bold; color: #28a745;">$${gapAmount.toFixed(2)}/month</span><br>
         ${monthlyRent ? `<strong>Monthly Rent:</strong> $${monthlyRent.toFixed(2)}` : ''}
       </p>
     </div>
@@ -487,19 +487,29 @@ export const accountCreatedEmailTemplate = ({ email, temporaryPassword, dashboar
 
 /**
  * Generate plain text version from HTML
+ * Note: This function is for converting our controlled email templates to plain text,
+ * NOT for sanitizing untrusted user input.
  */
 export const htmlToPlainText = (html) => {
-  return html
-    .replace(/<style[^>]*>.*?<\/style>/gi, '')
-    .replace(/<[^>]+>/g, '')
+  // Remove style tags and their content completely
+  let text = html.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+  
+  // Remove all HTML tags
+  text = text.replace(/<[^>]+>/g, '');
+  
+  // Decode HTML entities
+  text = text
     .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/\n\s*\n\s*\n/g, '\n\n')
-    .trim();
+    .replace(/&amp;/g, '&');  // Decode ampersand last to avoid double-decoding
+  
+  // Clean up whitespace
+  text = text.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
+  
+  return text;
 };
 
 export default {
