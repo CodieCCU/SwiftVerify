@@ -32,6 +32,16 @@ func NewSESService() *SESService {
 		ConfigSet:          getEnv("AWS_SES_CONFIG_SET", "swiftverify-emails"),
 	}
 	
+	// Initialize unsubscribe secret key from environment
+	unsubscribeSecret := getEnv("UNSUBSCRIBE_SECRET_KEY", "")
+	if unsubscribeSecret != "" {
+		if err := SetSecretKey(unsubscribeSecret); err != nil {
+			fmt.Printf("Warning: Failed to set unsubscribe secret key: %v\n", err)
+		}
+	} else {
+		fmt.Println("Warning: UNSUBSCRIBE_SECRET_KEY not set - unsubscribe token generation will fail")
+	}
+	
 	return &SESService{
 		config: config,
 		queue:  NewEmailQueue(),

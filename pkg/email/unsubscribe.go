@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -35,21 +36,45 @@ type UnsubscribeRecord struct {
 const (
 	// TokenExpirationDays is the number of days before a token expires
 	TokenExpirationDays = 90
-	// SecretKey should be loaded from environment variable
-	defaultSecretKey = "CHANGE_THIS_IN_PRODUCTION"
 )
 
-var secretKey = defaultSecretKey
+var (
+	secretKey   string
+	secretKeyMu sync.RWMutex
+)
 
-// SetSecretKey sets the secret key for HMAC token generation
-func SetSecretKey(key string) {
-	if key != "" {
-		secretKey = key
+// SetSecretKey sets the secret key for HMAC token generation (thread-safe)
+func SetSecretKey(key string) error {
+	if key == "" {
+		return fmt.Errorf("secret key cannot be empty")
 	}
+	
+	secretKeyMu.Lock()
+	defer secretKeyMu.Unlock()
+	secretKey = key
+	return nil
+}
+
+// getSecretKey safely retrieves the secret key
+func getSecretKey() (string, error) {
+	secretKeyMu.RLock()
+	defer secretKeyMu.RUnlock()
+	
+	if secretKey == "" {
+		return "", fmt.Errorf("secret key not set - call SetSecretKey() before generating tokens")
+	}
+	
+	return secretKey, nil
 }
 
 // GenerateUnsubscribeToken generates a unique HMAC-SHA256 token for an email
 func GenerateUnsubscribeToken(email string) (*UnsubscribeToken, error) {
+	// Get secret key safely
+	key, err := getSecretKey()
+	if err != nil {
+		return nil, err
+	}
+	
 	// Generate random bytes for additional entropy
 	randomBytes := make([]byte, 16)
 	if _, err := rand.Read(randomBytes); err != nil {
@@ -57,7 +82,7 @@ func GenerateUnsubscribeToken(email string) (*UnsubscribeToken, error) {
 	}
 
 	// Create HMAC hash
-	h := hmac.New(sha256.New, []byte(secretKey))
+	h := hmac.New(sha256.New, []byte(key))
 	h.Write([]byte(email))
 	h.Write(randomBytes)
 	h.Write([]byte(time.Now().UTC().String()))
