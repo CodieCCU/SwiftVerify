@@ -6,5 +6,9 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true
+  },
+  // Ensure environment variables are available
+  define: {
+    'process.env': {}
   }
 })

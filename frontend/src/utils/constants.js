@@ -108,6 +108,25 @@ export const EMAIL_TEMPLATES = {
   WAIVER_SUBJECT: 'SwiftVerify Application Approved - Waiver Form Required',
 };
 
+// Email subject lines (for AWS SES integration)
+export const EMAIL_SUBJECTS = {
+  DENIAL: 'SwiftVerify Application Decision - Action Required',
+  APPROVAL: 'Congratulations! Your SwiftVerify Application is Approved',
+  WAIVER: 'SwiftVerify Application Approved - Waiver Form Required',
+  GAP_PAY: 'Congratulations! Application Approved with Gap Pay Coverage',
+  LANDLORD_ALERT: 'New Rental Application Received - SwiftVerify',
+  ACCOUNT_CREATED: 'Welcome to SwiftVerify - Account Created',
+};
+
+// AWS SES Configuration Constants
+export const AWS_SES_CONFIG = {
+  DEFAULT_REGION: 'us-east-1',
+  DEFAULT_FROM_EMAIL: 'noreply@swift-verify.org',
+  DEFAULT_REPLY_TO: 'support@swift-verify.org',
+  MAX_RETRY_ATTEMPTS: 3,
+  RETRY_DELAY_MS: 2000, // Initial retry delay, increases exponentially
+};
+
 // Verification statuses
 export const VERIFICATION_STATUS = {
   PENDING: 'PENDING',
