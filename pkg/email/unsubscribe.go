@@ -20,17 +20,17 @@ type UnsubscribeToken struct {
 
 // UnsubscribeRecord represents a database record of an unsubscribe
 type UnsubscribeRecord struct {
-	ID                    string
-	Email                 string
-	Token                 string
-	UnsubscribeTimestamp time.Time
-	IPAddress            string
-	UserAgent            string
-	Reason               string
-	AdminRemoved         bool
-	AdminUserID          *int
-	RemovalNotes         string
-	CreatedAt            time.Time
+	ID                 string
+	Email              string
+	Token              string
+	UnsubscribedAt     time.Time
+	IPAddress          string
+	UserAgent          string
+	Reason             string
+	AdminRemoved       bool
+	AdminUserID        *int
+	RemovalNotes       string
+	CreatedAt          time.Time
 }
 
 const (

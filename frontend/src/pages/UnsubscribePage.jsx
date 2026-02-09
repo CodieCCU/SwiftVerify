@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const UnsubscribePage = () => {
@@ -9,12 +9,7 @@ const UnsubscribePage = () => {
   const [reason, setReason] = useState('');
   const [showReasonInput, setShowReasonInput] = useState(false);
 
-  useEffect(() => {
-    // Verify token on page load
-    verifyToken();
-  }, [token]);
-
-  const verifyToken = async () => {
+  const verifyToken = useCallback(async () => {
     try {
       const response = await fetch(`/api/email/unsubscribe/verify/${token}`);
       const data = await response.json();
@@ -36,7 +31,12 @@ const UnsubscribePage = () => {
       setStatus('error');
       setMessage('An error occurred while verifying your unsubscribe request.');
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    // Verify token on page load
+    verifyToken();
+  }, [verifyToken]);
 
   const handleUnsubscribe = async () => {
     setStatus('processing');
